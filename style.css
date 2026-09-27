@@ -132,3 +132,23 @@ body{padding-bottom:78px}.app-header{display:flex;align-items:center;gap:12px}.h
   .brand-section>summary>small{display:none}
   .compact-brand-head{align-items:center}
 }
+
+
+/* v12.0 — clearer logos, robust modal close, meme header mark */
+
+.brand-mark{width:34px;height:34px;border-radius:10px;border:1px solid #4a4a4a;background:url('brand-mark.png') center/cover no-repeat!important}
+.brand-mark.small{width:28px;height:28px}
+.close{z-index:30;pointer-events:auto;touch-action:manipulation}
+.sheet{padding-top:58px}
+.brand-logo{background:#fff;border-color:#444}
+.brand-logo.card{width:132px;height:92px}
+.brand-logo.detail{width:178px;height:124px}
+.brand-logo img,
+.brand-logo img[src*="logo.clearbit.com"],
+.brand-logo img[src*="google.com/s2/favicons"]{width:100%;height:100%;object-fit:contain!important;padding:6px!important;transform:none!important;image-rendering:auto!important;background:#fff!important}
+.brand-logo img.logo-fallback{padding:4px!important;background:#fff!important}
+.brand-detail-head{align-items:flex-start}
+@media(max-width:620px){
+  .brand-logo.card{width:124px;height:88px}
+  .brand-logo.detail{width:154px;height:108px}
+}

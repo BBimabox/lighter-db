@@ -15,26 +15,73 @@ function normalizeTier(raw,name=''){
   return t;
 }
 function displayBrandName(name){const base=canonicalBrandName(name);return base.split(' / ')[0].trim()||base}
-function brandLogoLabel(name){let label=displayBrandName(name).replace(/^Early\s+/i,'').trim();if(/^S\.T\. Dupont$/i.test(label))return 'S.T. DUPONT';if(label.length>14)label=label.split(/\s+/)[0];return label}
+function brandLogoLabel(name){
+  let label=displayBrandName(name).replace(/^Early\s+/i,'').trim();
+  if(/^S\.T\. Dupont$/i.test(label))return 'S.T. DUPONT';
+  return label;
+}
 function svgEsc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function makerMarkData(name){const text=svgEsc(brandLogoLabel(name));const svg=`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 110'><rect width='220' height='110' rx='18' fill='#171717'/><rect x='5' y='5' width='210' height='100' rx='15' fill='none' stroke='#4d4d4d'/><text x='110' y='58' text-anchor='middle' font-family='system-ui,-apple-system,Segoe UI,Arial' font-size='26' font-weight='750' fill='#f2f2f2'>${text}</text><text x='110' y='83' text-anchor='middle' font-family='system-ui,-apple-system,Segoe UI,Arial' font-size='10' letter-spacing='2' fill='#898989'>MAKER MARK</text></svg>`;return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg)}
+function makerMarkData(name){
+  const text=svgEsc(brandLogoLabel(name));
+  const lines=text.length>14&&text.includes(' ')?text.split(/\s+/):[text];
+  const t1=lines.slice(0,2).join(' ');
+  const svg=`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 180'>
+    <rect width='320' height='180' rx='22' fill='#ffffff'/>
+    <rect x='6' y='6' width='308' height='168' rx='18' fill='none' stroke='#dadada' stroke-width='2'/>
+    <text x='160' y='94' text-anchor='middle' font-family='system-ui,-apple-system,Segoe UI,Arial' font-size='34' font-weight='800' fill='#111111'>${t1}</text>
+  </svg>`;
+  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg)
+}
 const LOGO_DOMAINS=window.LIGHTER_LOGO_DOMAINS||{};
 const LOGO_OVERRIDES=window.LIGHTER_LOGO_OVERRIDES||{};
 function logoKeyName(name){return displayBrandName(name)}
 function highResOverride(name){return LOGO_OVERRIDES[logoKeyName(name)]||LOGO_OVERRIDES[canonicalBrandName(name)]||''}
 function brandLogoHTML(name,variant='card'){const fallback=makerMarkData(name),override=highResOverride(name);return `<div class="brand-logo ${variant}"><img data-brand-logo="${esc(canonicalBrandName(name))}" data-logo-fallback="${esc(fallback)}" src="${esc(override||fallback)}" alt="${esc(displayBrandName(name))} logo"></div>`}
-function logoCache(){return getJSON('lighterLogoCacheV3',{})}
-function setLogoCache(name,url){const c=logoCache();c[name]=url||'__none__';setJSON('lighterLogoCacheV3',c)}
-function commonsLogoQuery(name){const label=displayBrandName(name),q=`${label} logo`;
-  const url='https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrlimit=12&gsrsearch='+encodeURIComponent(q)+'&prop=imageinfo&iiprop=url|size|mime&iiurlwidth=640&format=json&origin=*';
+function logoCache(){return getJSON('lighterLogoCacheV4',{})}
+function setLogoCache(name,url){const c=logoCache();c[name]=url||'__none__';setJSON('lighterLogoCacheV4',c)}
+function commonsLogoQuery(name){
+  const label=displayBrandName(name),q=`${label} logo`;
+  const url='https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrlimit=12&gsrsearch='+encodeURIComponent(q)+'&prop=imageinfo&iiprop=url|size|mime&iiurlwidth=800&format=json&origin=*';
   return fetch(url,{mode:'cors'}).then(r=>r.ok?r.json():Promise.reject(new Error('commons'))).then(j=>{
     const pages=Object.values(j?.query?.pages||{});if(!pages.length)return '';
     const toks=label.toLowerCase().split(/[^a-z0-9]+/).filter(t=>t.length>2);
-    const ranked=pages.map(p=>{const title=String(p.title||'').toLowerCase(),info=(p.imageinfo||[])[0]||{},mime=String(info.mime||''),original=info.url||'',thumb=info.thumburl||original;let score=0;score+=/logo|wordmark|trademark|brand mark/.test(title)?8:0;score+=toks.filter(t=>title.includes(t)).length*4;if(toks.length&&toks.every(t=>title.includes(t)))score+=5;if(mime==='image/svg+xml'||/\.svg(?:$|\?)/i.test(original))score+=5;const w=Number(info.width||0),h=Number(info.height||0);if(w>=300||h>=150)score+=2;if(/mark ronson|album|song|person|actor|singer/.test(title))score-=12;const u=(mime==='image/svg+xml'&&original)?original:thumb;return {u,score,title}}).filter(x=>x.u&&x.score>=7).sort((a,b)=>b.score-a.score);return ranked[0]?.u||'';
+    const ranked=pages.map(p=>{
+      const title=String(p.title||'').toLowerCase(),info=(p.imageinfo||[])[0]||{},mime=String(info.mime||''),original=info.url||'',thumb=info.thumburl||original;
+      let score=0;
+      score+=/logo|wordmark|trademark|brand mark/.test(title)?8:0;
+      score+=toks.filter(t=>title.includes(t)).length*4;
+      if(toks.length&&toks.every(t=>title.includes(t)))score+=5;
+      if(mime==='image/svg+xml'||/\.svg(?:$|\?)/i.test(original))score+=5;
+      const w=Number(info.width||0),h=Number(info.height||0);
+      if(w>=500||h>=250)score+=2;
+      if(/person|portrait|actor|singer|song|album|mark ronson|bruno mars|politician|navy|admiral|photo|headshot/.test(title))score-=20;
+      const u=(mime==='image/svg+xml'&&original)?original:thumb;
+      return {u,score,title}
+    }).filter(x=>x.u&&x.score>=9).sort((a,b)=>b.score-a.score);
+    return ranked[0]?.u||'';
   }).catch(()=>"")
 }
 const logoObserver=('IntersectionObserver'in window)?new IntersectionObserver(entries=>{for(const e of entries)if(e.isIntersecting){logoObserver.unobserve(e.target);resolveBrandLogo(e.target)}} ,{rootMargin:'260px'}):null;
-async function resolveBrandLogo(img){if(!img||img.dataset.logoResolved==='1')return;img.dataset.logoResolved='1';const name=img.dataset.brandLogo,fallback=img.dataset.logoFallback||makerMarkData(name),override=highResOverride(name);if(displayBrandName(name)==='S.T. Dupont'){img.src=fallback;return}img.onerror=()=>{img.onerror=null;img.src=fallback;img.classList.add('logo-fallback')};if(override){img.src=override;return}const cache=logoCache(),cached=cache[name];if(cached){img.src=cached==='__none__'?fallback:cached;return}const u=await commonsLogoQuery(name);if(u){setLogoCache(name,u);img.src=u}else{setLogoCache(name,'__none__');img.src=fallback}}
+async function resolveBrandLogo(img){
+  if(!img||img.dataset.logoResolved==='1')return;
+  img.dataset.logoResolved='1';
+  const name=img.dataset.brandLogo;
+  const fallback=img.dataset.logoFallback||makerMarkData(name);
+  const override=highResOverride(name);
+  const domain=(LOGO_DOMAINS[displayBrandName(name)]||LOGO_DOMAINS[canonicalBrandName(name)]||'').trim();
+  img.onerror=()=>{img.onerror=null;img.src=fallback;img.classList.add('logo-fallback')};
+  if(override){img.src=override;return}
+  const cache=logoCache(),cached=cache[name];
+  if(cached){img.src=cached==='__none__'?fallback:cached;return}
+  if(domain){
+    const clearbit=`https://logo.clearbit.com/${domain}`;
+    setLogoCache(name,clearbit);
+    img.src=clearbit;
+    return;
+  }
+  setLogoCache(name,'__none__');
+  img.src=fallback;
+}
 function bindBrandLogos(root=document){root.querySelectorAll('img[data-brand-logo]').forEach(img=>{if(logoObserver)logoObserver.observe(img);else resolveBrandLogo(img)})}
 const ORIGIN_MAP={
   'Dunhill':'英國','S.T. Dupont':'法國','Thorens':'瑞士','Ronson':'美國','Evans':'美國','KW':'奧地利','Hahway':'德國','IMCO':'奧地利','Cartier':'法國','Mylflam':'奧地利','Cyklon':'德國','ASR':'美國','Scripto':'美國','Beattie':'美國','Elgin American':'美國','Negbaur':'美國','Bowers':'美國','Blake Manufacturing':'美國','Regens':'美國','Park Sherman':'美國','Nimrod':'英國','Kaschie':'德國','Champ':'日本','Karat':'日本','Zippo':'美國','Colibri':'英國','Penguin':'日本','Maruman':'日本','Prince':'日本','Flaminaire':'法國','Rowenta':'德國','Brother-Lite':'日本','Kiribi':'日本','BIC':'法國','Cricket':'瑞士','Clipper':'西班牙','Sarome':'日本','Windmill':'日本','Prometheus':'美國','XIKAR':'美國','ZORRO':'中國','Tsubota Pearl':'日本','Douglass':'日本','Sillems':'荷蘭','Braun':'德國','Penguin Japan':'日本'
@@ -278,4 +325,14 @@ function navState(extra={}){return {lighterDB:true,view,brand:currentBrand,editI
 function closeModalDirect(){modal.classList.add('hidden');document.body.classList.remove('lock');currentBrand=null;currentEditIndex=null}
 function applyNavState(state){const s=state&&state.lighterDB?state:{lighterDB:true,view:'db',brand:null,editIndex:null,sidebar:false};closeSidebarDirect();view=s.view||'db';currentBrand=null;currentEditIndex=null;document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===view));document.querySelectorAll('[data-side-view]').forEach(x=>x.classList.toggle('active',x.dataset.sideView===view));closeModalDirect();render();if(s.brand)openBrand(s.brand,s.editIndex??null,null,'none');if(s.sidebar)openSidebarDirect()}
 function render(){if(view==='mine'){renderFavorites();return}if(view==='stats'){renderStats();return}if(view==='knowledge'){renderKnowledge();return}if(view==='backup'){filters.style.display='none';q.parentElement.style.display='none';status.textContent='';renderBackup();return}if(view==='ai'){filters.style.display='none';q.parentElement.style.display='none';status.textContent='';renderAI();return}filters.style.display='flex';q.parentElement.style.display='flex';let data=all;let term=norm(q.value.trim());if(term)data=data.filter(x=>norm([x.name,displayBrandName(x.name),originLabel(x),...brandAliases(x.name)].join(' ')).includes(term));if(tier!=='全部')data=data.filter(x=>x.tier===tier);status.textContent=`找到 ${data.length} 筆${term?' · 搜尋「'+q.value.trim()+'」':''}`;results.innerHTML=data.length?data.map(card).join(''):`<div class="empty"><b>${term?'目前資料庫沒有找到':'這裡目前是空的'}</b>${term?'這不代表它不是品牌。請保留名稱，之後再查證並加入資料庫。':'點品牌右側 ★ 就能加入品牌收藏。'}</div>`;bindCards();bindBrandLogos(results)}
-q.oninput=render;document.querySelector('#clear').onclick=()=>{q.value='';q.focus();render()};const menuBtn=document.querySelector('#menuBtn'),sidebar=document.querySelector('#sidebar'),sidebarScrim=document.querySelector('#sidebarScrim'),closeSidebarBtn=document.querySelector('#closeSidebar');function openSidebarDirect(){sidebar.classList.add('open');sidebarScrim.classList.remove('hidden');sidebar.setAttribute('aria-hidden','false');menuBtn.setAttribute('aria-expanded','true');document.body.classList.add('sidebar-lock')}function closeSidebarDirect(){sidebar.classList.remove('open');sidebarScrim.classList.add('hidden');sidebar.setAttribute('aria-hidden','true');menuBtn.setAttribute('aria-expanded','false');document.body.classList.remove('sidebar-lock')}function openSidebar(){if(sidebar.classList.contains('open'))return;openSidebarDirect();history.pushState(navState({sidebar:true}),'',location.href)}function closeSidebar(){if(sidebar.classList.contains('open')&&history.state?.sidebar)history.back();else closeSidebarDirect()}menuBtn.onclick=openSidebar;closeSidebarBtn.onclick=closeSidebar;sidebarScrim.onclick=closeSidebar;function setView(next){if(!next)return;const sidebarWasOpen=sidebar.classList.contains('open')&&history.state?.sidebar;closeSidebarDirect();if(next===view&&!currentBrand){if(sidebarWasOpen)history.replaceState(navState(),'',location.href);return}view=next;closeModalDirect();document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===next));document.querySelectorAll('[data-side-view]').forEach(x=>x.classList.toggle('active',x.dataset.sideView===next));render();if(sidebarWasOpen)history.replaceState(navState(),'',location.href);else history.pushState(navState(),'',location.href)}document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>setView(b.dataset.view));document.querySelectorAll('[data-side-view]').forEach(b=>b.onclick=()=>setView(b.dataset.sideView));document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(sidebar.classList.contains('open'))closeSidebar();else if(currentBrand)history.back()}});document.querySelector('#closeModal').onclick=()=>{if(currentBrand)history.back();else closeModalDirect()};modal.onclick=e=>{if(e.target===modal)document.querySelector('#closeModal').click()};window.addEventListener('popstate',e=>applyNavState(e.state));renderFilters();render();history.replaceState(navState(),'',location.href);if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+q.oninput=render;document.querySelector('#clear').onclick=()=>{q.value='';q.focus();render()};const menuBtn=document.querySelector('#menuBtn'),sidebar=document.querySelector('#sidebar'),sidebarScrim=document.querySelector('#sidebarScrim'),closeSidebarBtn=document.querySelector('#closeSidebar');function openSidebarDirect(){sidebar.classList.add('open');sidebarScrim.classList.remove('hidden');sidebar.setAttribute('aria-hidden','false');menuBtn.setAttribute('aria-expanded','true');document.body.classList.add('sidebar-lock')}function closeSidebarDirect(){sidebar.classList.remove('open');sidebarScrim.classList.add('hidden');sidebar.setAttribute('aria-hidden','true');menuBtn.setAttribute('aria-expanded','false');document.body.classList.remove('sidebar-lock')}function openSidebar(){if(sidebar.classList.contains('open'))return;openSidebarDirect();history.pushState(navState({sidebar:true}),'',location.href)}function closeSidebar(){if(sidebar.classList.contains('open')&&history.state?.sidebar)history.back();else closeSidebarDirect()}menuBtn.onclick=openSidebar;closeSidebarBtn.onclick=closeSidebar;sidebarScrim.onclick=closeSidebar;function setView(next){if(!next)return;const sidebarWasOpen=sidebar.classList.contains('open')&&history.state?.sidebar;closeSidebarDirect();if(next===view&&!currentBrand){if(sidebarWasOpen)history.replaceState(navState(),'',location.href);return}view=next;closeModalDirect();document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===next));document.querySelectorAll('[data-side-view]').forEach(x=>x.classList.toggle('active',x.dataset.sideView===next));render();if(sidebarWasOpen)history.replaceState(navState(),'',location.href);else history.pushState(navState(),'',location.href)}document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>setView(b.dataset.view));document.querySelectorAll('[data-side-view]').forEach(b=>b.onclick=()=>setView(b.dataset.sideView));document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(sidebar.classList.contains('open'))closeSidebar();else if(currentBrand)history.back()}});function closeModalFromUI(){
+  const hadBrand=!!currentBrand;
+  if(hadBrand&&history.state?.brand){
+    history.back();
+    setTimeout(()=>{if(currentBrand)closeModalDirect()},180);
+  }else closeModalDirect();
+}
+const closeModalBtn=document.querySelector('#closeModal');
+closeModalBtn.onclick=e=>{e.preventDefault();e.stopPropagation();closeModalFromUI()};
+closeModalBtn.addEventListener('touchend',e=>{e.preventDefault();e.stopPropagation();closeModalFromUI()},{passive:false});
+modal.onclick=e=>{if(e.target===modal)closeModalFromUI()};window.addEventListener('popstate',e=>applyNavState(e.state));renderFilters();render();history.replaceState(navState(),'',location.href);if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');

@@ -1,3 +1,11 @@
+Lighter DB PWA v11.5
+
+- App 頂端不再顯示使用者封面圖；該圖片只保留為手機 PWA App icon。
+- 知識區移除自製 SVG 示意圖，改用 Wikimedia Commons 上具有 Public Domain / Creative Commons 授權的實物照片。
+- 圖片加入作者 / 授權標示及原始 Commons 連結。
+- 修正知識區圖片超出卡片邊界：所有圖片強制 max-width 100%、object-fit contain，手機改成單欄。
+- Cloudflare Worker / OpenAI API 設定不需更動。
+
 Lighter DB PWA v11.4
 
 - 品牌頁的年份 / 真偽 / 網路研究 / 資料來源 / 品牌筆記整塊預設收起，點擊才展開。

@@ -32,3 +32,16 @@ body{padding-bottom:78px}.app-header{display:flex;align-items:center;gap:12px}.h
 
 /* v11.4: collapsed brand research block + knowledge illustrations */
 .brand-guide-collapsible{padding:0!important;overflow:hidden}.brand-guide-summary{list-style:none;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:11px;align-items:center;padding:14px;cursor:pointer}.brand-guide-summary::-webkit-details-marker{display:none}.brand-guide-summary h3{margin:0 0 3px}.brand-guide-summary small{color:#9ca5aa}.guide-chevron{color:#e5c364;font-size:20px;transition:transform .2s}.brand-guide-collapsible[open] .guide-chevron{transform:rotate(180deg)}.brand-guide-body{padding:0 14px 14px;border-top:1px solid #314049}.brand-guide-body>.guide-block:first-child,.brand-guide-body>.guide-placeholder:first-child{margin-top:13px}.knowledge-visual{margin:14px 0 16px;background:#15191b;border:1px solid #303a3d;border-radius:14px;overflow:hidden}.knowledge-visual img{display:block;width:100%;height:auto;background:#111}.knowledge-visual figcaption{padding:9px 11px;color:#9fa9ad;font-size:12px;line-height:1.5;border-top:1px solid #2b3335}.knowledge-body>section{scroll-margin-top:100px}@media(max-width:620px){.brand-guide-summary{padding:13px 12px}.knowledge-visual{margin:12px 0 14px}}
+
+/* v11.5: PWA icon only + real reference photos in knowledge area */
+.header-cover{display:none!important}
+.knowledge-photo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 16px;max-width:100%;min-width:0}
+.knowledge-photo{margin:0;min-width:0;max-width:100%;overflow:hidden;border:1px solid #3a3a3a;border-radius:14px;background:#151515}
+.knowledge-photo>a{display:block;width:100%;max-width:100%;overflow:hidden;background:#0f0f0f}
+.knowledge-photo img{display:block;width:100%;max-width:100%;height:260px;object-fit:contain;object-position:center;background:#0f0f0f;box-sizing:border-box}
+.knowledge-photo figcaption{display:grid;gap:5px;padding:10px 11px;max-width:100%;overflow-wrap:anywhere;word-break:break-word}
+.knowledge-photo figcaption span{font-size:13px;line-height:1.55;color:#ddd}
+.knowledge-photo figcaption small{font-size:10px;line-height:1.45;color:#8d8d8d}
+.knowledge-body,.knowledge-body section,.knowledge-card{min-width:0;max-width:100%;overflow:hidden}
+.knowledge-body img,.knowledge-body svg{max-width:100%!important}
+@media(max-width:620px){.knowledge-photo-grid{grid-template-columns:1fr}.knowledge-photo img{height:auto;max-height:360px}}

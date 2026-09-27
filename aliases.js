@@ -2,7 +2,7 @@ window.LIGHTER_ALIASES = {
   "Dunhill": ["Alfred Dunhill", "Dunhill London"],
   "S.T. Dupont": ["ST Dupont", "S T Dupont", "Dupont"],
   "Thorens": ["Thorens Switzerland", "Thorens Swiss"],
-  "Early Ronson / Art Metal Works": ["Ronson", "Art Metal Works", "AMW", "Ronson Art Metal Works"],
+  "Ronson": ["Early Ronson", "Art Metal Works", "AMW", "Ronson Art Metal Works"],
   "Evans": ["Evans Case Company"],
   "KW / Karl Wieden / KAWEE": ["KW", "Karl Wieden", "KAWEE", "Kawee"],
   "Hahway / HW": ["Hahway", "H.W.", "HW"],

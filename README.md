@@ -1,17 +1,24 @@
-# Lighter DB PWA v9
+# Lighter DB PWA v10 — Cloud Lighter DB
 
-Lighter DB v9 延續 v8 的品牌資料庫、收藏統計、知識庫、AI 辨識、照片、最愛與備份功能，新增：
+v10 focuses on cloud backup, account security and UI cleanup rather than adding more collector gimmicks.
 
-- 品牌 Alias / 別名系統：內建常見別名，也可在品牌頁自行新增；搜尋與 AI 品牌比對會一起使用別名。
-- 重複型號偵測：同品牌新增近似相同型號時會先提醒。
-- 保養 / 維修紀錄：已收藏型號可逐筆記錄日期、項目、費用、幣別、店家與備註。
-- AI 辨識歷史：每次成功辨識會自動保留日期、模式、結果、來源與最多 3 張當時照片，可重新查看或刪除。
-- AI 結果存入型號時會連結該次 AI 歷史。
-- 收藏統計新增保養 / 維修筆數。
-- 完整備份升級到 v9，會包含自訂別名、AI 歷史、保養紀錄與 AI 歷史照片。
+## New in v10
+- Supabase cloud backup / restore with local-first operation
+- Google login + Email magic-link login UI
+- Automatic sync after local changes (optional)
+- Private cloud backup of collection photos
+- Supabase RLS setup SQL: each user can access only their own data
+- Cloudflare Worker can require Supabase login before OpenAI `/analyze`, preventing strangers from spending your API credits
+- Reference links moved into Knowledge
+- Four scattered web-search buttons merged into one `網路研究` section
+- `品牌辨識筆記` renamed / consolidated as `品牌研究筆記`
+- AI result actions consolidated into one `加入資料庫` action with a mode selector
+- AI history no longer saves new duplicate full-resolution photo copies
+- API UI keeps per-request estimate and links to official Usage instead of pretending to be a monthly bill
 
-## 更新方式
+## Important migration behavior
+- v10 still works without Supabase. Your existing local data remains available.
+- Do **not** update the Cloudflare Worker with Supabase auth variables until your Supabase login works in the app.
+- Once configured, the Worker checks the signed-in user's access token before calling OpenAI.
 
-把本資料夾全部檔案上傳並覆蓋 GitHub `lighter-db` Repository，Commit 後等待 GitHub Pages 部署。Cloudflare Worker 與 OpenAI API Key 不需要重新設定。
-
-若手機仍顯示舊版，重新整理網站或完全關閉 PWA 後再開；Service Worker 會改用 `lighter-db-v9` 快取。
+See `CLOUD_SETUP.md` and `supabase-setup.sql`.

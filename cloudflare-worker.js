@@ -1,4 +1,4 @@
-// Lighter DB v6 — Cloudflare Worker backend for OpenAI image identification.
+// Lighter DB v10 — Cloudflare Worker backend for authenticated OpenAI image identification.
 // IMPORTANT: Store OPENAI_API_KEY as a Worker secret. Never paste it into this file.
 
 const DEFAULT_ALLOWED_ORIGIN = 'https://bbimabox.github.io';
@@ -10,7 +10,7 @@ function cors(origin, allowed) {
     'Access-Control-Allow-Origin': ok ? origin : allowed,
     'Vary': 'Origin',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Cache-Control': 'no-store'
   };
 }
@@ -20,6 +20,25 @@ function json(data, status, headers) {
     status,
     headers: { 'Content-Type': 'application/json; charset=utf-8', ...headers }
   });
+}
+
+
+async function requireUser(request, env) {
+  // Migration-safe: auth is enforced only after both Supabase variables are configured.
+  if (!env.SUPABASE_URL || !env.SUPABASE_PUBLISHABLE_KEY) return { legacy: true, user: null };
+  const auth = request.headers.get('Authorization') || '';
+  const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';
+  if (!token) throw Object.assign(new Error('請先登入 Lighter DB 雲端帳號。'), { status: 401 });
+  const r = await fetch(env.SUPABASE_URL.replace(/\/+$/,'') + '/auth/v1/user', {
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'apikey': env.SUPABASE_PUBLISHABLE_KEY
+    }
+  });
+  if (!r.ok) throw Object.assign(new Error('登入憑證無效或已過期，請重新登入。'), { status: 401 });
+  const user = await r.json();
+  if (!user?.id) throw Object.assign(new Error('無法確認登入使用者。'), { status: 401 });
+  return { legacy: false, user };
 }
 
 function outputText(resp) {
@@ -95,13 +114,18 @@ export default {
 
     const url = new URL(request.url);
     if (request.method === 'GET' && url.pathname.endsWith('/health')) {
-      return json({ ok: true, service: 'lighter-db-ai', version: 6 }, 200, headers);
+      return json({ ok: true, service: 'lighter-db-ai', version: 10, auth_required: !!(env.SUPABASE_URL && env.SUPABASE_PUBLISHABLE_KEY) }, 200, headers);
     }
     if (request.method !== 'POST' || !url.pathname.endsWith('/analyze')) {
       return json({ ok: false, error: 'Not found' }, 404, headers);
     }
     if (!env.OPENAI_API_KEY) {
       return json({ ok: false, error: 'Worker 尚未設定 OPENAI_API_KEY secret。' }, 500, headers);
+    }
+    try {
+      await requireUser(request, env);
+    } catch (e) {
+      return json({ ok: false, error: e.message || 'Unauthorized' }, e.status || 401, headers);
     }
 
     let body;
@@ -143,7 +167,7 @@ export default {
         }
       }
     };
-    if (mode === 'deep') payload.tools = [{ type: 'web_search', search_context_size: 'medium' }];
+    if (mode === 'deep') { payload.tools = [{ type: 'web_search', search_context_size: 'medium' }]; payload.include = ['web_search_call.action.sources']; }
 
     let apiResp;
     try {

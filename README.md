@@ -1,3 +1,9 @@
+Lighter DataBase v11.8
+
+- 放大品牌 Logo 顯示區與實際 Logo 圖。
+- 品牌卡新增「已收藏數量」純數字顯示。
+- 保留 Rank 與最愛按鈕。
+
 Lighter DataBase PWA v11.7
 
 - 所有品牌卡片都有 Logo / maker mark 圖像位置。

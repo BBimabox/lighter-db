@@ -81,3 +81,22 @@ body{padding-bottom:78px}.app-header{display:flex;align-items:center;gap:12px}.h
 
 /* v11.7: verified/current logos when available; Commons lookup otherwise */
 .brand-logo{background:#fafafa}.brand-logo img{object-fit:contain;padding:8px;background:#fafafa}.brand-logo img.logo-fallback{padding:0;background:#171717}.brand-logo.card{width:76px;height:58px}.brand-logo.detail{width:118px;height:86px}.brandcard-copy .origin{color:#bcbcbc}.brandcard-v116 .tier{min-width:48px}.brand-logo img[src*="google.com/s2/favicons"]{image-rendering:auto;padding:10px}@media(max-width:620px){.brand-logo.card{width:68px;height:52px}.brand-logo.detail{width:104px;height:76px}}
+
+
+/* v11.8: larger brand logos + numeric owned count */
+.brand-logo.card{width:112px;height:78px;border-radius:17px}
+.brand-logo.detail{width:148px;height:102px}
+.brand-logo img{padding:3px;transform:scale(1.28);transform-origin:center;background:#fafafa}
+.brand-logo img[src*="google.com/s2/favicons"]{padding:0;transform:scale(2.05)}
+.brand-logo img.logo-fallback{transform:none;padding:0;background:#171717}
+.brandcard-left{gap:16px}
+.brandcard-right{gap:8px}
+.brand-owned-count{min-width:48px;height:34px;padding:0 10px;border-radius:11px;display:grid;place-items:center;background:#292929;border:1px solid #464646;color:#f3f3f3;font-size:16px;font-weight:850;font-variant-numeric:tabular-nums;line-height:1}
+@media(max-width:620px){
+  .brand-logo.card{width:100px;height:72px}
+  .brand-logo.detail{width:132px;height:92px}
+  .brandcard-left{gap:13px}
+  .brandcard-v116{padding:13px}
+  .brandcard-right{gap:7px}
+  .brand-owned-count{min-width:46px;height:32px;font-size:15px}
+}

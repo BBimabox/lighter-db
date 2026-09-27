@@ -1,11 +1,6 @@
-# Lighter DB PWA
+# Lighter DB PWA v2
 
-第一版：291 筆資料，離線搜尋、Tier 篩選、我的收藏（localStorage）。
+291 筆品牌 / Maker 資料，離線搜尋、Tier 篩選、品牌收藏、品牌詳情、自訂型號、已收藏勾選、來源網址、參考資料庫、自訂連結、JSON 備份/還原。
 
-## 最簡單的上線方法
-1. 把本資料夾所有檔案上傳到 GitHub repository。
-2. Settings → Pages → Deploy from a branch → main / root → Save。
-3. 等待 GitHub Pages 網址產生。
-4. Android Chrome 開啟網址 → ⋮ → 加到主畫面 / 安裝應用程式。
-
-注意：直接雙擊 index.html 可以預覽搜尋，但 PWA 安裝/離線 Service Worker 需要透過 HTTPS 網站（例如 GitHub Pages）。
+## GitHub Pages 更新
+將本資料夾所有檔案上傳並覆蓋 repository 根目錄同名檔案。GitHub Pages 會自動重新部署。

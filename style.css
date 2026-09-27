@@ -45,3 +45,39 @@ body{padding-bottom:78px}.app-header{display:flex;align-items:center;gap:12px}.h
 .knowledge-body,.knowledge-body section,.knowledge-card{min-width:0;max-width:100%;overflow:hidden}
 .knowledge-body img,.knowledge-body svg{max-width:100%!important}
 @media(max-width:620px){.knowledge-photo-grid{grid-template-columns:1fr}.knowledge-photo img{height:auto;max-height:360px}}
+
+
+/* v11.6: header rename, lighter mark, simpler brand cards */
+.brand-line{display:flex;align-items:center;gap:10px;line-height:1.1;white-space:nowrap}
+.brand-mark{display:inline-block;width:28px;height:28px;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Cg%20fill%3D%27%23fff%27%3E%3Crect%20x%3D%2726%27%20y%3D%2726%27%20width%3D%2724%27%20height%3D%2730%27%20rx%3D%273%27/%3E%3Crect%20x%3D%2718%27%20y%3D%2710%27%20width%3D%2712%27%20height%3D%2724%27%20rx%3D%273%27/%3E%3Crect%20x%3D%2749%27%20y%3D%2731%27%20width%3D%276%27%20height%3D%279%27%20rx%3D%273%27/%3E%3Ccircle%20cx%3D%2726%27%20cy%3D%2731%27%20r%3D%274%27/%3E%3Cpath%20d%3D%27M39%2022c0-4%202-8%205-12%201%204%205%207%205%2013%200%205-4%209-9%209s-9-4-9-9c0-3%201-6%203-8%200%203%202%205%205%207z%27/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;flex:0 0 auto}
+.brand-mark.small{width:24px;height:24px}
+.sidebar-title{display:flex;align-items:center;gap:10px}
+.brandcard-v116{padding:16px}
+.brandcard-main{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brandcard-left{display:flex;align-items:center;gap:14px;min-width:0;flex:1}
+.brandcard-copy{min-width:0}
+.brandcard-copy .name{font-size:19px;font-weight:800;line-height:1.2;word-break:break-word}
+.origin{margin-top:6px;font-size:13px;color:#a9a9a9;line-height:1.4}
+.brandcard-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex:0 0 auto}
+.brand-logo{border-radius:16px;overflow:hidden;box-shadow:0 10px 22px rgba(0,0,0,.22);background:#141414;border:1px solid #414141;flex:0 0 auto}
+.brand-logo.card{width:74px;height:52px}
+.brand-logo.detail{width:110px;height:78px}
+.brand-logo img{display:block;width:100%;height:100%;object-fit:cover}
+.brand-detail-head{align-items:flex-start;gap:14px}
+.brand-detail-copy{min-width:0;display:grid;gap:7px}
+.brand-detail-copy h2{margin:0;line-height:1.15}
+.brand-detail-copy .tier{width:max-content}
+.brand-detail-copy .region{font-size:14px;color:#b0b0b0;margin-top:0}
+.sidebar-section{padding-bottom:18px}
+.sidebar-section>button>span{font-size:19px}
+.knowledge-page .knowledge-hero h2{display:flex;align-items:center;gap:8px}
+@media(max-width:620px){
+  .brand-logo.card{width:66px;height:48px}
+  .brand-logo.detail{width:94px;height:68px}
+  .brandcard-main{align-items:flex-start}
+  .brandcard-left{gap:12px}
+  .brandcard-copy .name{font-size:17px}
+}
+
+/* v11.7: verified/current logos when available; Commons lookup otherwise */
+.brand-logo{background:#fafafa}.brand-logo img{object-fit:contain;padding:8px;background:#fafafa}.brand-logo img.logo-fallback{padding:0;background:#171717}.brand-logo.card{width:76px;height:58px}.brand-logo.detail{width:118px;height:86px}.brandcard-copy .origin{color:#bcbcbc}.brandcard-v116 .tier{min-width:48px}.brand-logo img[src*="google.com/s2/favicons"]{image-rendering:auto;padding:10px}@media(max-width:620px){.brand-logo.card{width:68px;height:52px}.brand-logo.detail{width:104px;height:76px}}

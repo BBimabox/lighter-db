@@ -1,4 +1,11 @@
-Lighter DB PWA v11.5
+Lighter DataBase PWA v11.7
+
+- 所有品牌卡片都有 Logo / maker mark 圖像位置。
+- 有已知官方網站的品牌優先讀取官方網站 favicon / logo mark。
+- 其他品牌會在可見時自動向 Wikimedia Commons 搜尋可辨識 Logo；查不到才回退為標示 MAKER MARK 的文字牌，不假裝是真 Logo。
+- Logo 搜尋結果會存在本機快取，避免每次開啟都重查。
+
+Lighter DB PWA v11.6
 
 - App 頂端不再顯示使用者封面圖；該圖片只保留為手機 PWA App icon。
 - 知識區移除自製 SVG 示意圖，改用 Wikimedia Commons 上具有 Public Domain / Creative Commons 授權的實物照片。

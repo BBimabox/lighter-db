@@ -1,6 +1,6 @@
 {
-  "name": "Lighter DB 打火機收藏資料庫",
-  "short_name": "Lighter DB",
+  "name": "Lighter DataBase",
+  "short_name": "LighterDB",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#101010",

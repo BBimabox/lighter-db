@@ -90,7 +90,7 @@ window.LIGHTER_KNOWLEDGE=[
       {title:'③ 底印',body:'Made in、專利號、序號、材質、hallmark、型號碼。'},
       {title:'④ 品相',body:'掉鍍、裂痕、焊補、重鍍、換件、缺螺絲、卡死、漏氣。'},
       {title:'⑤ 查證',body:'品牌頁辨識指南 → Lighter Library / VCL → Google 型錄／專利 → 收藏論壇 → AI 當輔助。'},
-      {title:'⑥ 留紀錄',body:'把來源網址、照片、價格、賣家描述與你的判斷一起存進 Lighter DB。'}
+      {title:'⑥ 留紀錄',body:'把來源網址、照片、價格、賣家描述與你的判斷一起存進 Lighter DataBase。'}
     ]
   }
 ];

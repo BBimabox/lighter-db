@@ -21,3 +21,10 @@ window.LIGHTER_LOGO_DOMAINS = {
   "Vector": "vectorkgm.com",
   "Sillems": "sillems.com"
 };
+
+
+window.LIGHTER_LOGO_OVERRIDES = {
+  "Dunhill": "https://commons.wikimedia.org/wiki/Special:FilePath/Dunhill_logo.svg",
+  "Thorens": "https://commons.wikimedia.org/wiki/Special:FilePath/Logo_Thorens.svg",
+  "Ronson": "https://commons.wikimedia.org/wiki/Special:FilePath/Ronson_zippo_logos.png?width=640"
+};

@@ -1,3 +1,11 @@
+Lighter DataBase v11.9
+
+- Logo 不再放大 Google favicon；優先使用高解析 / SVG。
+- Commons 圖片改抓 640px，並用新版 cache，避免舊糊圖繼續被沿用。
+- 找不到可靠 logo 時，用清晰向量 maker mark，不再硬放大低解析圖。
+- 品牌頁改成三個收合區：已收錄型號、新增型號、品牌資料 / 辨識。
+- 預設只展開型號列表，畫面更乾淨。
+
 Lighter DataBase v11.8
 
 - 放大品牌 Logo 顯示區與實際 Logo 圖。

@@ -100,3 +100,35 @@ body{padding-bottom:78px}.app-header{display:flex;align-items:center;gap:12px}.h
   .brandcard-right{gap:7px}
   .brand-owned-count{min-width:46px;height:32px;font-size:15px}
 }
+
+/* v11.9 — crisp logos + simplified brand detail layout */
+.brand-logo{background:#fff}
+.brand-logo img,
+.brand-logo img[src*="google.com/s2/favicons"]{width:100%;height:100%;object-fit:contain!important;padding:10px!important;transform:none!important;image-rendering:auto!important;background:#fff!important}
+.brand-logo img.logo-fallback{padding:0!important;background:#171717!important}
+.brand-logo.card{width:112px;height:78px}
+.brand-logo.detail{width:128px;height:90px}
+.compact-brand-head{padding:4px 42px 14px 0;margin-bottom:4px;align-items:center}
+.brand-head-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.brand-head-line h2{margin:0}
+.brand-head-line .tier{padding:5px 10px;min-width:42px}
+.brand-section{background:#1b1b1b;border:1px solid #343434;border-radius:16px;margin:12px 0;overflow:hidden}
+.brand-section[open]{border-color:#47423a}
+.brand-section>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 16px;cursor:pointer;font-weight:850;-webkit-tap-highlight-color:transparent}
+.brand-section>summary::-webkit-details-marker{display:none}
+.brand-section>summary::after{content:'⌄';color:#d6b65e;font-size:17px;transition:transform .18s ease}
+.brand-section[open]>summary::after{transform:rotate(180deg)}
+.brand-section>summary>span{flex:1}
+.brand-section>summary>b{min-width:32px;height:28px;padding:0 9px;border-radius:999px;display:grid;place-items:center;background:#282828;border:1px solid #444;color:#eee;font-size:13px}
+.brand-section>summary>small{color:#888;font-weight:500;margin-left:auto;font-size:12px}
+.brand-section-body{padding:0 12px 14px;border-top:1px solid #2f2f2f}
+.brand-section .form{margin-bottom:4px}
+.brand-info-section .alias-card,.brand-info-section .guide-card{margin:12px 0}
+.brand-model-list .modelrow:first-child{margin-top:12px}
+@media(max-width:620px){
+  .brand-logo.card{width:104px;height:74px}
+  .brand-logo.detail{width:112px;height:80px}
+  .brand-section>summary{padding:14px}
+  .brand-section>summary>small{display:none}
+  .compact-brand-head{align-items:center}
+}

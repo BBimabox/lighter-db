@@ -426,4 +426,19 @@
     "Jobon":"jobon.com.cn"
   };
   window.LIGHTER_LOGO_OVERRIDES = window.LIGHTER_REAL_LOGOS;
+
+
+  // v12.7 — representative model photos (Commons) used only when no reliable standalone logo is available.
+  window.LIGHTER_REP_IMAGES = Object.assign({}, window.LIGHTER_REP_IMAGES||{}, {
+    'Evans': 'https://commons.wikimedia.org/wiki/Special:FilePath/Vintage%20Evans%20Spitfire%20Cigarette%20Lighter%2C%20Made%20In%20USA%20%2823403574136%29.jpg',
+    'Regens': 'https://commons.wikimedia.org/wiki/Special:FilePath/Pair%20of%20Vintage%20Regens%20Cigarette%20Lighters%2C%20Made%20In%20USA%2C%20Lighter%20Fluid%20Models%20%2814403169179%29.jpg',
+    'Park Sherman': 'https://commons.wikimedia.org/wiki/Special:FilePath/Vintage%20Park%20Sherman%20Lift%20Arm%20Table%20Cigarette%20Lighter%20%2826388390704%29.jpg',
+    'Elgin American': 'https://commons.wikimedia.org/wiki/Special:FilePath/Vintage%20Elgin%20American%20Cigarette%20Lighter%2C%20Made%20In%20USA%2C%20Circa%201940s%20%2838589708072%29.jpg',
+    'Bowers': 'https://commons.wikimedia.org/wiki/Special:FilePath/Vintage%20Bowers%20WWII%20Side%20Sleeve%20Trench%20Cigarette%20Lighter%20%2814119784053%29.jpg',
+    'ASR': 'https://commons.wikimedia.org/wiki/Special:FilePath/Vintage%20ASR%20%28American%20Safety%20Razor%20Company%29%20Ascot%20Table%20Cigarette%20Lighter%2C%20Made%20In%20USA%2C%20Circa%20Late%201940s%20%2829594084824%29.jpg',
+    'Negbaur': 'https://commons.wikimedia.org/wiki/Special:FilePath/Vintage%20Negbaur%20Chrome%20Cigarette%20Table%20Lighter%2C%20P-51%20Mustang%20Airplane%2C%20Made%20In%20USA%20%2817138119867%29.jpg',
+    'Berkeley': 'https://commons.wikimedia.org/wiki/Special:FilePath/Vintage%20Berkeley%20Cigarette%20Lighter%2C%20Flashlight%20Company%20Of%20America%2C%20Jersey%20City%2C%20NJ%2C%20Made%20In%20USA%20%2814310575817%29.jpg',
+    'Beattie': 'https://commons.wikimedia.org/wiki/Special:FilePath/Vintage%20Beattie%20Jet%20Lighter%20For%20Tobacco%20Pipes%2C%20Made%20In%20USA%2C%20An%20Unusual%20Fluid%20Lighter%2C%20Circa%201950s%20%2814080333367%29.jpg',
+    'Ritepoint': 'https://commons.wikimedia.org/wiki/Special:FilePath/Vintage%20Ritepoint%20Advertising%20Cigarette%20Lighter%20With%20Visual%20Fuel%20Supply%20%28Signals%20The%20Eye%20-%20Before%20It%27s%20Dry%29%2C%20Circa%201950s%20%2817069851344%29.jpg'
+  });
 })();

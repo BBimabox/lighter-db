@@ -34,20 +34,35 @@ function makerMarkData(name){
 const LOGO_OVERRIDES=window.LIGHTER_REAL_LOGOS||window.LIGHTER_LOGO_OVERRIDES||{};
 const LOGO_DOMAINS=window.LIGHTER_LOGO_DOMAINS||{};
 const LOGO_FIT=window.LIGHTER_LOGO_FIT||{};
+const REP_IMAGES=window.LIGHTER_REP_IMAGES||{};
 function brandLogoOverrides(){return readStore('lighterBrandLogoOverrides',{})}
 function brandRankOverrides(){return readStore('lighterBrandRanks',{})}
 function brandOriginOverrides(){return readStore('lighterBrandOrigins',{})}
 function customBrands(){return readStore('lighterCustomBrands',[])}
 function logoKeyName(name){return displayBrandName(name)}
-function defaultLogo(name){const k=logoKeyName(name),direct=LOGO_OVERRIDES[k]||LOGO_OVERRIDES[canonicalBrandName(name)]||'';if(direct)return direct;const d=LOGO_DOMAINS[k]||LOGO_DOMAINS[canonicalBrandName(name)]||'';return d?`https://logo.clearbit.com/${d}?size=512`:''}
+function defaultLogo(name){
+  const k=logoKeyName(name),direct=LOGO_OVERRIDES[k]||LOGO_OVERRIDES[canonicalBrandName(name)]||'',rep=REP_IMAGES[k]||REP_IMAGES[canonicalBrandName(name)]||'';
+  // A real external logo always wins. If the built-in mark is only a generated data-URI maker mark,
+  // prefer a curated representative lighter photo when available.
+  if(direct && !String(direct).startsWith('data:image'))return direct;
+  if(rep)return rep;
+  if(direct)return direct;
+  const d=LOGO_DOMAINS[k]||LOGO_DOMAINS[canonicalBrandName(name)]||'';
+  return d?`https://logo.clearbit.com/${d}?size=512`:''
+}
 function effectiveLogo(name){return brandLogoOverrides()[canonicalBrandName(name)]||defaultLogo(name)||''}
 function brandLogoHTML(name,variant='card'){
   if(shouldOmitLogo(name))return '';
-  const fallback=makerMarkData(name),real=effectiveLogo(name),custom=!!brandLogoOverrides()[canonicalBrandName(name)],scale=custom?1:(LOGO_FIT[logoKeyName(name)]||1.16);
-  return `<div class="brand-logo ${variant}${real?' real-logo':''}" style="--logo-scale:${scale}"><img data-logo-fallback="${esc(fallback)}" src="${esc(real||fallback)}" alt="${esc(displayBrandName(name))} logo"></div>`
+  const fallback=makerMarkData(name),real=effectiveLogo(name),custom=!!brandLogoOverrides()[canonicalBrandName(name)],key=logoKeyName(name);
+  const builtin=LOGO_OVERRIDES[key]||LOGO_OVERRIDES[canonicalBrandName(name)]||'',rep=REP_IMAGES[key]||REP_IMAGES[canonicalBrandName(name)]||'';
+  const isRep=!custom&&!!rep&&(!builtin||String(builtin).startsWith('data:image'))&&real===rep;
+  const baseScale=custom?1:(LOGO_FIT[key]||1.16);
+  // Detail view must always show the complete artwork; optical zoom is only for compact list cards.
+  const scale=isRep?1:(variant==='detail'?0.96:(variant==='setting'?1:baseScale));
+  return `<div class="brand-logo ${variant}${real?' real-logo':''}${isRep?' rep-photo':''}" style="--logo-scale:${scale}"><img data-logo-fallback="${esc(fallback)}" src="${esc(real||fallback)}" alt="${esc(displayBrandName(name))} logo"></div>`
 }
-function logoLookupCache(){return getJSON('lighterLogoLookupV126',{})}
-function setLogoLookup(name,url){const c=logoLookupCache();c[name]=url||'__none__';setJSON('lighterLogoLookupV126',c)}
+function logoLookupCache(){return getJSON('lighterLogoLookupV127',{})}
+function setLogoLookup(name,url){const c=logoLookupCache();c[name]=url||'__none__';setJSON('lighterLogoLookupV127',c)}
 async function commonsLogoLookup(name){
   const label=displayBrandName(name),tokens=label.toLowerCase().split(/[^a-z0-9]+/).filter(t=>t.length>2);
   if(!tokens.length)return '';

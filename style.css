@@ -229,3 +229,35 @@ body{padding-bottom:78px}.app-header{display:flex;align-items:center;gap:12px}.h
   #closeModal.close{width:58px!important;height:58px!important;min-width:58px!important;min-height:58px!important;top:8px!important;right:8px!important}
   .sheet{padding-top:72px!important}
 }
+
+
+/* v12.7 — detail logo containment + representative-model fallback */
+.brand-logo.detail{
+  overflow:hidden!important;
+  padding:0!important;
+}
+.brand-logo.detail.real-logo img,
+.brand-logo.detail img.logo-fallback{
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  box-sizing:border-box!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  padding:10px!important;
+  transform:scale(var(--logo-scale,.96))!important;
+  transform-origin:center center!important;
+}
+.brand-logo.rep-photo{background:#f4f4f4!important}
+.brand-logo.rep-photo img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  transform:none!important;
+  padding:5px!important;
+  background:#f4f4f4!important;
+}
+.brand-logo.card.rep-photo img{padding:4px!important}
+.brand-logo.detail.rep-photo img{padding:8px!important}

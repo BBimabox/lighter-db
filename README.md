@@ -1,11 +1,25 @@
-Lighter DataBase v13
+# Lighter DataBase v14
+
+- 新增固定的「↑」一鍵至頂按鈕。
+- 捲動超過一定距離後才出現，點擊會平滑回到資料庫頂端與搜尋列。
+- 按鈕位於底部導覽上方，不遮住資料卡與導覽。
+- 品牌、Logo、Rank、排序、AI、收藏等 v13.1 既有資料與功能完整保留。
+
+# Lighter DataBase v13.1
+
+本版是 Logo 查證修正版：
+- IM Corona 改回真正的品牌 Logo，代表機型只作為載入失敗時的 fallback。
+- Windmill / Prince / Maruman 不再使用自行畫的文字假 Logo；若沒有採用到可靠獨立 Logo，就使用已查證的代表打火機照片。
+- 維持原則：已正常的 Logo 不動；有可信 Logo 用 Logo；沒有可信 Logo 才用代表機型；兩者都不可靠就不顯示圖片。
+
+Lighter DataBase v13.1
 
 - 新增資料庫排序：Rank、字母、收藏數、型號數、國家，並可反向排序。
 - 嚴格清理假 Logo：不再使用程式生成的草寫 / 黑底白字 / 自製字標冒充官方 Logo。
 - 沒有可信 Logo 時優先使用已查證的代表打火機機型；兩者都沒有就不顯示圖片。
 - 保留已正常的真實 Logo 與使用者自訂 Logo，不整批洗掉。
 
-# Lighter DataBase v13
+# Lighter DataBase v13.1
 
 - 修正 Tresor：不再使用臆造 badge Logo，改以已查證的 Tresor / Rudolf Stuchly 代表打火機照片。
 - 修正 TCW：使用 Treibacher Chemische Werke 的歷史商標圖樣。
@@ -14,19 +28,19 @@ Lighter DataBase v13
 - 代表機型圖片會標註「代表機型」，避免和 Logo 混淆。
 - 停用廣泛自動 Commons Logo 搜尋，避免同名品牌誤抓。
 
-Lighter DataBase v13
+Lighter DataBase v13.1
 
 - 修正 Ronson、Evans、Demley、Kaschie、Ibelo 等 Logo 留白過大、視覺太小。
 - 加入逐品牌 optical scaling，掃描既有 Logo 並針對大量老品牌放大。
 - 新增第三批約 60 個 vintage maker mark / wordmark。
 
-Lighter DataBase v13
+Lighter DataBase v13.1
 
 版本規則：功能新增／改編時升整數版；一般 UI、Logo、文字與內容調整使用小數版；只有大幅重做 UI 風格時，UI 變動才升整數版。
 
 v13：擴充第二批真實／歷史 maker mark Logo；其餘品牌會嚴格查 Wikimedia Commons 的 logo/wordmark/trademark，失敗才回退到文字 maker mark；品牌卡與品牌頁國家欄位只顯示國家名稱，不再顯示「起源：」。
 
-Lighter DataBase v13
+Lighter DataBase v13.1
 
 - 第一批 30 個常見品牌改用真實／常見 logo 圖形。
 - Prototype / 設計者 / Patent 類條目完全不顯示 logo 框。
@@ -35,7 +49,7 @@ Lighter DataBase v13
 - 知識區參考圖改成不同的 Wikimedia Commons 實物／結構照片，避免重複。
 - Zippo 維持 A+。
 
-Lighter DataBase v13
+Lighter DataBase v13.1
 
 - Logo 不再放大 Google favicon；優先使用高解析 / SVG。
 - Commons 圖片改抓 640px，並用新版 cache，避免舊糊圖繼續被沿用。

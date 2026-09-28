@@ -299,3 +299,11 @@ body{padding-bottom:78px}.app-header{display:flex;align-items:center;gap:12px}.h
 .sort-dir{min-width:88px;cursor:pointer}
 .sort-dir:hover{background:#292929}
 @media(max-width:620px){.database-toolbar{align-items:stretch}.sort-controls{width:100%}.sort-controls select{flex:1}.sort-dir{min-width:96px}.database-toolbar>#addBrandBtn{width:100%}}
+
+
+/* v14 — one-tap scroll to top */
+.scroll-top-btn{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:calc(82px + env(safe-area-inset-bottom));width:52px;height:52px;border-radius:50%;border:1px solid #4a4a4a;background:#242424;color:#f4f4f4;font-size:27px;font-weight:800;line-height:1;display:grid;place-items:center;z-index:12;box-shadow:0 10px 30px #0009;opacity:0;visibility:hidden;transform:translateY(10px) scale(.92);pointer-events:none;transition:opacity .16s ease,transform .16s ease,visibility .16s ease,background .12s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.scroll-top-btn.show{opacity:.94;visibility:visible;transform:translateY(0) scale(1);pointer-events:auto}
+.scroll-top-btn:active{transform:scale(.91);background:#343434}
+.scroll-top-btn:focus-visible{outline:3px solid #e2c15d;outline-offset:3px}
+@media(min-width:900px){.scroll-top-btn{right:28px;bottom:88px}}

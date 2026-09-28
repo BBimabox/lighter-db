@@ -549,3 +549,45 @@
   ];
   invented.forEach(name=>{ if(real[name] && String(real[name]).startsWith('data:')) delete real[name]; });
 })();
+
+
+// v13.1 — verified artwork correction pass.
+// Policy: verified logo > representative lighter photo > no image.
+// Never treat an invented wordmark as a brand logo.
+(function(){
+  const real=window.LIGHTER_REAL_LOGOS=window.LIGHTER_REAL_LOGOS||{};
+  const rep=window.LIGHTER_REP_IMAGES=window.LIGHTER_REP_IMAGES||{};
+  const fit=window.LIGHTER_LOGO_FIT=window.LIGHTER_LOGO_FIT||{};
+
+  // IM Corona: the brand itself documents that Ishimitsu created the distinctive
+  // I + M logo to distinguish its Corona lighters. The same geometric mark is
+  // visible on period/current product photography. Use the actual common mark,
+  // not an Old Boy product photo, as the primary artwork.
+  real['IM Corona']='https://i.ebayimg.com/images/g/RokAAOSw3qVnt8w6/s-l1600.png';
+  rep['IM Corona']='https://image1.shopserve.jp/akiha-web.com/pic-labo/llimg/aicn031_ic5.jpg?t=20250730171454';
+  fit['IM Corona']=1.10;
+
+  // Windmill: official site identifies AWL-10 as a core Windmill model and shows
+  // a Windmill brand logo, but a stable standalone official logo asset is not
+  // exposed here. Prefer a representative AWL-10 photo instead of a made-up wordmark.
+  delete real['Windmill'];
+  rep['Windmill']='https://shopping.c.yimg.jp/lib/akiha-web/awin065_ic2.jpg';
+
+  // Prince: use a real Prince lighter carrying the PRINCE mark; do not draw a
+  // substitute serif wordmark and call it a logo.
+  delete real['Prince'];
+  rep['Prince']='https://www.cigaraccessorieswarehouse.com/cdn/shop/files/Screenshot_2025-03-03_at_11.51.40.png?crop=center&height=1540&v=1740963106&width=1540';
+
+  // Maruman: no verified standalone logo asset has been adopted in this build.
+  // Use a representative Maruman lighter instead of generated typography.
+  delete real['Maruman'];
+  rep['Maruman']='https://i.ebayimg.com/images/g/COAAAOSwqJxnIRQn/s-l1200.png';
+
+  // Keep source notes in code for later auditing; these are not shown in the UI.
+  window.LIGHTER_LOGO_SOURCES=Object.assign({},window.LIGHTER_LOGO_SOURCES||{}, {
+    'IM Corona':'https://imcorona.com/aboutus/',
+    'Windmill':'https://windmill.co.jp/product/307/',
+    'Prince':'https://www.cigaraccessorieswarehouse.com/collections/prince-lighters',
+    'Maruman':'https://www.ebay.com/itm/332925056861'
+  });
+})();

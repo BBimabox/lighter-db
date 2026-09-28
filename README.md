@@ -1,4 +1,10 @@
-Lighter DataBase v12.3
+Lighter DataBase v12.4
+
+版本規則：功能新增／改編時升整數版；一般 UI、Logo、文字與內容調整使用小數版；只有大幅重做 UI 風格時，UI 變動才升整數版。
+
+v12.4：擴充第二批真實／歷史 maker mark Logo；其餘品牌會嚴格查 Wikimedia Commons 的 logo/wordmark/trademark，失敗才回退到文字 maker mark；品牌卡與品牌頁國家欄位只顯示國家名稱，不再顯示「起源：」。
+
+Lighter DataBase v12.4
 
 - 第一批 30 個常見品牌改用真實／常見 logo 圖形。
 - Prototype / 設計者 / Patent 類條目完全不顯示 logo 框。
@@ -7,7 +13,7 @@ Lighter DataBase v12.3
 - 知識區參考圖改成不同的 Wikimedia Commons 實物／結構照片，避免重複。
 - Zippo 維持 A+。
 
-Lighter DataBase v12.3
+Lighter DataBase v12.4
 
 - Logo 不再放大 Google favicon；優先使用高解析 / SVG。
 - Commons 圖片改抓 640px，並用新版 cache，避免舊糊圖繼續被沿用。
@@ -78,7 +84,7 @@ Lighter DB PWA v11.3
 - 收藏編號改為可編輯；留空仍自動產生 L0001 格式，並檢查重複編號。
 
 
-## v12.3
+## v12.4
 - Curated real-logo batch restored for common brands, including the Dunhill vector mark.
 - Brand logo can be replaced by URL or uploaded image.
 - Added custom brand creation.

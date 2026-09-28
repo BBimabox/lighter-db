@@ -209,3 +209,23 @@ body{padding-bottom:78px}.app-header{display:flex;align-items:center;gap:12px}.h
   background:#fff!important;
 }
 .brand-logo.setting img{transform:scale(var(--logo-scale,1.05))!important}
+
+
+/* v12.6 — responsive close controls + logo legibility tuning */
+#closeModal.close{
+  width:56px!important;height:56px!important;min-width:56px!important;min-height:56px!important;
+  display:grid!important;place-items:center!important;top:10px!important;right:10px!important;
+  border-radius:50%!important;font-size:30px!important;font-weight:700!important;line-height:1!important;
+  background:#2a2a2a!important;border:1px solid #454545!important;color:#fff!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.32)!important;z-index:60!important;
+  touch-action:manipulation!important;-webkit-tap-highlight-color:transparent!important;
+  cursor:pointer!important;user-select:none!important;
+}
+#closeModal.close::before{content:'';position:absolute;inset:-8px;border-radius:50%}
+#closeModal.close:active{transform:scale(.92);background:#3b3b3b!important}
+.sheet{padding-top:70px!important}
+#closeSidebar{min-width:46px!important;min-height:46px!important;touch-action:manipulation!important}
+@media(max-width:620px){
+  #closeModal.close{width:58px!important;height:58px!important;min-width:58px!important;min-height:58px!important;top:8px!important;right:8px!important}
+  .sheet{padding-top:72px!important}
+}

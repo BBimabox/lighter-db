@@ -1,4 +1,11 @@
-# Lighter DataBase v12.9
+Lighter DataBase v13
+
+- 新增資料庫排序：Rank、字母、收藏數、型號數、國家，並可反向排序。
+- 嚴格清理假 Logo：不再使用程式生成的草寫 / 黑底白字 / 自製字標冒充官方 Logo。
+- 沒有可信 Logo 時優先使用已查證的代表打火機機型；兩者都沒有就不顯示圖片。
+- 保留已正常的真實 Logo 與使用者自訂 Logo，不整批洗掉。
+
+# Lighter DataBase v13
 
 - 修正 Tresor：不再使用臆造 badge Logo，改以已查證的 Tresor / Rudolf Stuchly 代表打火機照片。
 - 修正 TCW：使用 Treibacher Chemische Werke 的歷史商標圖樣。
@@ -7,19 +14,19 @@
 - 代表機型圖片會標註「代表機型」，避免和 Logo 混淆。
 - 停用廣泛自動 Commons Logo 搜尋，避免同名品牌誤抓。
 
-Lighter DataBase v12.9
+Lighter DataBase v13
 
 - 修正 Ronson、Evans、Demley、Kaschie、Ibelo 等 Logo 留白過大、視覺太小。
 - 加入逐品牌 optical scaling，掃描既有 Logo 並針對大量老品牌放大。
 - 新增第三批約 60 個 vintage maker mark / wordmark。
 
-Lighter DataBase v12.9
+Lighter DataBase v13
 
 版本規則：功能新增／改編時升整數版；一般 UI、Logo、文字與內容調整使用小數版；只有大幅重做 UI 風格時，UI 變動才升整數版。
 
-v12.9：擴充第二批真實／歷史 maker mark Logo；其餘品牌會嚴格查 Wikimedia Commons 的 logo/wordmark/trademark，失敗才回退到文字 maker mark；品牌卡與品牌頁國家欄位只顯示國家名稱，不再顯示「起源：」。
+v13：擴充第二批真實／歷史 maker mark Logo；其餘品牌會嚴格查 Wikimedia Commons 的 logo/wordmark/trademark，失敗才回退到文字 maker mark；品牌卡與品牌頁國家欄位只顯示國家名稱，不再顯示「起源：」。
 
-Lighter DataBase v12.9
+Lighter DataBase v13
 
 - 第一批 30 個常見品牌改用真實／常見 logo 圖形。
 - Prototype / 設計者 / Patent 類條目完全不顯示 logo 框。
@@ -28,7 +35,7 @@ Lighter DataBase v12.9
 - 知識區參考圖改成不同的 Wikimedia Commons 實物／結構照片，避免重複。
 - Zippo 維持 A+。
 
-Lighter DataBase v12.9
+Lighter DataBase v13
 
 - Logo 不再放大 Google favicon；優先使用高解析 / SVG。
 - Commons 圖片改抓 640px，並用新版 cache，避免舊糊圖繼續被沿用。
@@ -99,7 +106,7 @@ Lighter DB PWA v11.3
 - 收藏編號改為可編輯；留空仍自動產生 L0001 格式，並檢查重複編號。
 
 
-## v12.9
+## v13
 - Curated real-logo batch restored for common brands, including the Dunhill vector mark.
 - Brand logo can be replaced by URL or uploaded image.
 - Added custom brand creation.
@@ -107,14 +114,14 @@ Lighter DB PWA v11.3
 - Full backup now includes custom brands, Rank/origin edits and user logo overrides.
 
 
-## v12.9
+## v13
 - 品牌詳情頁 Logo 強制完整 contain，避免 Thorens 等橫向字標超出框線。
 - 卡片可保留光學放大，但詳情頁使用安全縮放。
 - 找不到可靠獨立 Logo 的品牌，可改用 Wikimedia Commons 的代表型號照片；首批加入 Evans、Regens、Park Sherman、Elgin American、Bowers、ASR、Negbaur、Berkeley、Beattie、Ritepoint。
 
 
-## v12.9
-- 恢復 v12.5/v12.6 的大 Logo 顯示，不再用 v12.8 的縮小 padding。
+## v13
+- 恢復 v13/v13 的大 Logo 顯示，不再用 v13 的縮小 padding。
 - 修正 Colibri、IM Corona、Prince、Windmill、Maruman、Cricket 等容易空白或 hotlink 失效的品牌。
 - 外部 Logo 載入失敗時改用已研究的代表機型，不再顯示破圖。
 - 詳情頁仍保留 contain 上限，避免 Thorens 等橫向 Logo 超框。

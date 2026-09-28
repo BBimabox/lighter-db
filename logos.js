@@ -513,3 +513,39 @@
     "Cricket":1.08
   });
 })();
+
+
+// v13 — strict artwork policy.
+// 1) Keep existing verified/working image URLs.
+// 2) Remove all internally generated pseudo-wordmarks (data:image SVG) so they are never presented as real logos.
+// 3) When a verified logo is unavailable, prefer a researched representative lighter photo.
+// 4) If neither is available, the brand is shown without an image rather than inventing one.
+(function(){
+  const real=window.LIGHTER_REAL_LOGOS||{};
+  for(const [name,url] of Object.entries(real)){
+    if(typeof url==='string' && url.startsWith('data:image/svg+xml')) delete real[name];
+  }
+
+  // Move product photos that were previously stored in the logo table into representative-model images.
+  const rep=window.LIGHTER_REP_IMAGES=Object.assign({},window.LIGHTER_REP_IMAGES||{});
+  const moveToRep=(name)=>{const u=real[name];if(u&&/^https?:/i.test(u)){rep[name]=rep[name]||u;delete real[name]}};
+  ['Douglass','Flaminaire'].forEach(moveToRep);
+
+  // Researched representative models used when a trustworthy standalone logo is unavailable.
+  Object.assign(rep,{
+    'IM Corona':'https://cdn11.bigcommerce.com/s-6ihhxuk/images/stencil/1280x1280/products/19137/79809/im_corona_satin_chrome__75932__09398__62711.1728568476.jpg?c=2',
+    'Windmill':'https://cdn.thisiswhyimbroke.com/images/all-weather-lighter-640x533.jpg',
+    'Prince':'https://i.etsystatic.com/16078450/r/il/6b35c2/6932984655/il_fullxfull.6932984655_rxsr.jpg',
+  });
+
+  // A verified current logo remains preferred where available. If it fails, the app falls back to the representative model.
+  real['Colibri']='https://images.seeklogo.com/logo-png/55/1/colibri-lighter-logo-png_seeklogo-551006.png';
+
+  // These brands were previously rendered using invented cursive/word-art. They now rely on representative photos if present,
+  // otherwise they intentionally display with no image.
+  const invented=[
+    'Evans','KW','Hahway','Mylflam','Cyklon','ASR','Elgin American','Negbaur','Bowers','Blake Manufacturing','Regens','Park Sherman','Nimrod','Demley','Kaschie','Ibelo','Champ','Karat','Tresor','Orlik','Mosda','Myon','Consul','BeBe','Eldro','SAFFA','La Nationale','Condor','Kaba','MEB','Pino King','Baier','Nesor','Silver Match','Beney','Napier','Kreisler','Berkeley','Barlow','Swank','Ritepoint','Coronet','Carlton','Marathon','Stratoflame','Warco','Wellington','ALPCO','ATC','Automatic Surelite','DuoLite','Hamilton','Penguin','Golden Wheel','Pilot','Tanita','Eterna','Juvenia',
+    'Ideal Platinum Igniter','Airflam','Electro-Match','Fisher','Flamex','Franklin','Galter','Magna Electric','Magic Pocket Lamp','Nassau','Rogers','Strikalite','Sunex','Storm King','Storm Master','Vulcan','Winlite','Weston','Pyxis','Packlite','Prontolite','Reliance','Realite','Raythor','Omsco-Lite','Nulite','Morlite','MasterCraft','Kleer Vue','Kent','Kingflame','Havalite','Hi-Glo','Hi-Lite','Firefly','Firechief','Everflow','Excello','Dura-Lux','Cont-Lite','Companion','Crown Harp','Binalite','Amico','Admiral','Adcan','AGM','Allbright','Allround','American Leatherline','Aro','Astronaut 888','Balboa','Barnes','Baronex','Beta 100','Big Leaguer','Bomart','Boston','Budget','Butler','Castleton','Charmant','Chief','Classic','Clinton','Cosmic','Cozy','Crest-Craft','DAE','Dal-Tis','Deville','Dura Light','Edinex','Elegant','Empress','Erhard','Fenton','Florentine','Fortune','Gas Boy','Gas Lite','Gasomatic','Gemini','Goal','Gold View','Golden Arrow','Golden Bell','Hilton','Hudson','Ideal','Idealine','Jet Lite','Jewel Gas','Kalan','Kalman','Lucky Lite','Magic','Magna','Manor','Marksman','Modern','Montecarlo','National','Noble','Novo','Oasis','Park','Park Avenue','Pacton','Pearl','Picolo','Polo','Ramba','Redlite','Regal','Ruby','Safari','Sigma','Sovereign','Superior','Supermatch','Tarlton','Thames','Tiger','Toral','Trigger','Unified','Vinci','Vogue','Wales','Warren','Windsor','Zatma','Zenith','Zico'
+  ];
+  invented.forEach(name=>{ if(real[name] && String(real[name]).startsWith('data:')) delete real[name]; });
+})();

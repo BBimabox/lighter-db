@@ -42,54 +42,32 @@ function customBrands(){return readStore('lighterCustomBrands',[])}
 function logoKeyName(name){return displayBrandName(name)}
 function defaultLogo(name){
   const k=logoKeyName(name),direct=LOGO_OVERRIDES[k]||LOGO_OVERRIDES[canonicalBrandName(name)]||'',rep=REP_IMAGES[k]||REP_IMAGES[canonicalBrandName(name)]||'';
-  // A real external logo always wins. If the built-in mark is only a generated data-URI maker mark,
-  // prefer a curated representative lighter photo when available.
+  // Only an external, curated asset counts as a verified logo.
+  // Generated data-URI wordmarks are legacy placeholders and are intentionally hidden.
   if(direct && !String(direct).startsWith('data:image'))return direct;
   if(rep)return rep;
-  if(direct)return direct;
   const d=LOGO_DOMAINS[k]||LOGO_DOMAINS[canonicalBrandName(name)]||'';
   return d?`https://logo.clearbit.com/${d}?size=512`:''
 }
 function effectiveLogo(name){return brandLogoOverrides()[canonicalBrandName(name)]||defaultLogo(name)||''}
 function brandLogoHTML(name,variant='card'){
   if(shouldOmitLogo(name))return '';
-  const fallback=makerMarkData(name),real=effectiveLogo(name),custom=!!brandLogoOverrides()[canonicalBrandName(name)],key=logoKeyName(name);
+  const real=effectiveLogo(name),custom=!!brandLogoOverrides()[canonicalBrandName(name)],key=logoKeyName(name);
+  if(!real)return '';
   const builtin=LOGO_OVERRIDES[key]||LOGO_OVERRIDES[canonicalBrandName(name)]||'',rep=REP_IMAGES[key]||REP_IMAGES[canonicalBrandName(name)]||'';
   const isRep=!custom&&!!rep&&(!builtin||String(builtin).startsWith('data:image'))&&real===rep;
-  const baseScale=custom?1:(LOGO_FIT[key]||1.16);
-  // Detail view must always show the complete artwork; optical zoom is only for compact list cards.
-  const scale=isRep?1:(variant==='detail'?0.96:(variant==='setting'?1:baseScale));
-  return `<div class="brand-logo ${variant}${real?' real-logo':''}${isRep?' rep-photo':''}" style="--logo-scale:${scale}"><img data-logo-fallback="${esc(fallback)}" src="${esc(real||fallback)}" alt="${esc(displayBrandName(name))} logo"></div>`
+  const fallback='';
+  const baseScale=custom?1:(LOGO_FIT[key]||1.10);
+  const scale=isRep?1:(variant==='detail'?0.94:(variant==='setting'?1:baseScale));
+  return `<div class="brand-logo ${variant}${real?' real-logo':''}${isRep?' rep-photo':''}" style="--logo-scale:${scale}"><img data-logo-fallback="${esc(fallback)}" src="${esc(real)}" alt="${esc(displayBrandName(name))} ${isRep?'代表機型':'logo'}">${isRep?'<span class="rep-badge">代表機型</span>':''}</div>`
 }
-function logoLookupCache(){return getJSON('lighterLogoLookupV127',{})}
-function setLogoLookup(name,url){const c=logoLookupCache();c[name]=url||'__none__';setJSON('lighterLogoLookupV127',c)}
-async function commonsLogoLookup(name){
-  const label=displayBrandName(name),tokens=label.toLowerCase().split(/[^a-z0-9]+/).filter(t=>t.length>2);
-  if(!tokens.length)return '';
-  const query=`${label} logo wordmark trademark`;
-  const u='https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrlimit=10&gsrsearch='+encodeURIComponent(query)+'&prop=imageinfo&iiprop=url|size|mime&iiurlwidth=800&format=json&origin=*';
-  try{
-    const r=await fetch(u,{mode:'cors'});if(!r.ok)return '';
-    const j=await r.json(),pages=Object.values(j?.query?.pages||{});
-    const bad=/person|portrait|actor|singer|album|song|football|politician|headshot|product photo|lighter photo/i;
-    const ranked=pages.map(p=>{const title=String(p.title||''),low=title.toLowerCase(),ii=(p.imageinfo||[])[0]||{},mime=String(ii.mime||''),orig=ii.url||'',thumb=ii.thumburl||orig;let s=0;s+=(/logo|wordmark|trademark|brand mark/i.test(title)?10:0);s+=tokens.filter(t=>low.includes(t)).length*5;if(tokens.every(t=>low.includes(t)))s+=5;if(mime==='image/svg+xml'||/\.svg(?:$|\?)/i.test(orig))s+=5;if(bad.test(title))s-=25;return {s,u:(mime==='image/svg+xml'&&orig)?orig:thumb}}).filter(x=>x.u&&x.s>=15).sort((a,b)=>b.s-a.s);
-    return ranked[0]?.u||'';
-  }catch{return ''}
-}
-async function resolveBrandLogo(img){
-  if(!img||img.dataset.resolved==='1')return;img.dataset.resolved='1';
-  const fallback=img.dataset.logoFallback||'',name=img.alt?.replace(/ logo$/i,'')||'';
-  const useFallback=()=>{if(fallback){img.src=fallback;img.classList.add('logo-fallback')}};
-  img.onerror=()=>{img.onerror=null;useFallback()};
-  const current=img.getAttribute('src')||'';
-  if(current&&current!==fallback)return;
-  const cache=logoLookupCache(),cached=cache[name];
-  if(cached){if(cached!=='__none__')img.src=cached;return}
-  const found=await commonsLogoLookup(name);setLogoLookup(name,found||'__none__');if(found)img.src=found;
-}
-function bindBrandLogos(root=document){root.querySelectorAll('.brand-logo img').forEach(img=>resolveBrandLogo(img))}
+function logoLookupCache(){return {}}
+function setLogoLookup(name,url){}
+async function commonsLogoLookup(name){return ''}
+async function resolveBrandLogo(img){return}
+function bindBrandLogos(root=document){}
 const ORIGIN_MAP={
-  'Dunhill':'英國','S.T. Dupont':'法國','Thorens':'瑞士','Ronson':'美國','Evans':'美國','KW':'德國','Hahway':'德國','IMCO':'奧地利','Cartier':'法國','Mylflam':'德國','Cyklon':'德國','ASR':'美國','Scripto':'美國','Beattie':'美國','Elgin American':'美國','Negbaur':'美國','Bowers':'美國','Blake Manufacturing':'美國','Regens':'美國','Park Sherman':'美國','Nimrod':'美國','Kaschie':'德國','Champ':'日本','Karat':'日本','Zippo':'美國','Colibri':'英國','Penguin':'日本','Maruman':'日本','Prince':'日本','Flaminaire':'法國','Rowenta':'德國','Brother-Lite':'日本','Kiribi':'日本','BIC':'法國','Cricket':'瑞士','Clipper':'西班牙','Sarome':'日本','Windmill':'日本','Prometheus':'美國','XIKAR':'美國','ZORRO':'中國','Tsubota Pearl':'日本','Douglass':'日本','Sillems':'德國','Braun':'德國','IM Corona':'日本','Asprey':'英國','Lancel':'法國','Parker':'美國','Vector':'美國'
+  'Dunhill':'英國','S.T. Dupont':'法國','Thorens':'瑞士','Ronson':'美國','Evans':'美國','KW':'德國','Hahway':'德國','IMCO':'奧地利','Cartier':'法國','Mylflam':'德國','Cyklon':'德國','ASR':'美國','Scripto':'美國','Beattie':'美國','Elgin American':'美國','Negbaur':'美國','Bowers':'美國','Blake Manufacturing':'美國','Regens':'美國','Park Sherman':'美國','Nimrod':'美國','Kaschie':'德國','Champ':'日本','Karat':'日本','Zippo':'美國','Colibri':'英國','Penguin':'日本','Maruman':'日本','Prince':'日本','Flaminaire':'法國','Rowenta':'德國','Brother-Lite':'日本','Kiribi':'日本','BIC':'法國','Cricket':'瑞士','Clipper':'西班牙','Sarome':'日本','Windmill':'日本','Prometheus':'美國','XIKAR':'美國','ZORRO':'中國','Tsubota Pearl':'日本','Douglass':'日本','Sillems':'德國','Braun':'德國','IM Corona':'日本','Asprey':'英國','Lancel':'法國','Parker':'美國','Vector':'美國','Tresor':'奧地利','INGAD':'奧地利','TCW':'奧地利','Fackel':'奧地利','Richard Kohn':'奧地利','Eterna':'瑞士'
 };
 function originLabel(x){const o=brandOriginOverrides()[x.name];return o||x.origin||ORIGIN_MAP[displayBrandName(x.name)]||'未查'}
 let all=[];

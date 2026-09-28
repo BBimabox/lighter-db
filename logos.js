@@ -441,4 +441,26 @@
     'Beattie': 'https://commons.wikimedia.org/wiki/Special:FilePath/Vintage%20Beattie%20Jet%20Lighter%20For%20Tobacco%20Pipes%2C%20Made%20In%20USA%2C%20An%20Unusual%20Fluid%20Lighter%2C%20Circa%201950s%20%2814080333367%29.jpg',
     'Ritepoint': 'https://commons.wikimedia.org/wiki/Special:FilePath/Vintage%20Ritepoint%20Advertising%20Cigarette%20Lighter%20With%20Visual%20Fuel%20Supply%20%28Signals%20The%20Eye%20-%20Before%20It%27s%20Dry%29%2C%20Circa%201950s%20%2817069851344%29.jpg'
   });
+
+
+  // v12.8 — verified corrections and representative-model fallbacks.
+  // Important: generated wordmarks are no longer treated as "real logos" by the app.
+  // When a verified logo is unavailable, a researched representative lighter image is used instead.
+  Object.assign(window.LIGHTER_REAL_LOGOS, {
+    "TCW": "https://uspto.report/TM/72186979/mark.png"
+  });
+
+  window.LIGHTER_REP_IMAGES = Object.assign({}, window.LIGHTER_REP_IMAGES||{}, {
+    "Tresor": "https://i.ebayimg.com/images/g/KKAAAOSwWU1oOzQz/s-l1200.png",
+    "INGAD": "https://my-lighter.com/1810-thickbox_default/dubsky-ingad-.jpg",
+    "Kaschie": "https://my-lighter.com/2213-large_default/kaschie-k33.jpg",
+    "Ibelo": "https://my-lighter.com/3647-large_default/ibero-monopol-table-lighters.jpg",
+    "Karat": "https://my-lighter.com/1115-large_default/karat-noblesse.jpg",
+    "Mylflam": "https://my-lighter.com/1227-large_default/mylflam-ball-370.jpg",
+    "KW": "https://my-lighter.com/1045-large_default/kw-650-23.jpg",
+    "Fackel": "https://my-lighter.com/3570-large_default/fackel.jpg",
+    "Richard Kohn": "https://my-lighter.com/536-large_default/imperator.jpg",
+    "Eterna": "https://my-lighter.com/3737-large_default/eterna-watch.jpg",
+    "Nimrod": "https://i.ebayimg.com/00/s/MTA2NlgxNjAw/z/tmYAAOSwd7ZnnfMS/%24_57.JPG?set_id=880000500F"
+  });
 })();

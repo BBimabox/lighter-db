@@ -5,16 +5,19 @@ function canonicalBrandName(raw){
     .replace(/（(?:重要早期款|早期|重要老款|現代款|普通現代款|現代 disposable|大眾款)）/gi,'')
     .trim();
 }
+
 const BRAND_NAME_MIGRATIONS=Object.fromEntries((window.LIGHTERS||[]).map(x=>[x.name,canonicalBrandName(x.name)]).filter(([a,b])=>a!==b));
-const A_MINUS_NAMES=new Set(['Knapp','Rex / Rex-Lite','Girey / S.O. Bigney','Lifto-Lite','Lektrolite','FumaLux','Fisher','Nassau','Storm King','Storm Master','Weston','Packlite','Blue Bird','Kingflame']);
 function normalizeTier(raw,name=''){
+  const display=displayBrandName(name);
   const t=String(raw||'').trim();
+  if(display==='Zippo')return 'A+';
   if(t==='S～A+')return 'A+';
   if(t==='B（現代）')return 'B';
-  if(t==='A-/B+')return A_MINUS_NAMES.has(name)?'A-':'B+';
+  if(t==='A-/B+')return 'B+';
   return t;
 }
 function displayBrandName(name){const base=canonicalBrandName(name);return base.split(' / ')[0].trim()||base}
+function shouldOmitLogo(name){return /無牌|發明者|Patent|設計者/i.test(String(name||''))}
 function brandLogoLabel(name){
   let label=displayBrandName(name).replace(/^Early\s+/i,'').trim();
   if(/^S\.T\. Dupont$/i.test(label))return 'S.T. DUPONT';
@@ -22,67 +25,38 @@ function brandLogoLabel(name){
 }
 function svgEsc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function makerMarkData(name){
-  const text=svgEsc(brandLogoLabel(name));
-  const lines=text.length>14&&text.includes(' ')?text.split(/\s+/):[text];
-  const t1=lines.slice(0,2).join(' ');
-  const svg=`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 180'>
-    <rect width='320' height='180' rx='22' fill='#ffffff'/>
-    <rect x='6' y='6' width='308' height='168' rx='18' fill='none' stroke='#dadada' stroke-width='2'/>
-    <text x='160' y='94' text-anchor='middle' font-family='system-ui,-apple-system,Segoe UI,Arial' font-size='34' font-weight='800' fill='#111111'>${t1}</text>
+  const label=brandLogoLabel(name);
+  const words=label.split(/\s+/).filter(Boolean);
+  let lines=[];
+  if(label.length<=12) lines=[label];
+  else if(words.length>=2) lines=[words.slice(0,Math.ceil(words.length/2)).join(' '),words.slice(Math.ceil(words.length/2)).join(' ')];
+  else lines=[label.slice(0,12),label.slice(12)];
+  const yBase=lines.length===1?92:74;
+  const lineGap=lines.length===1?0:40;
+  const fontSize=lines.some(v=>v.length>14)?26:(lines.some(v=>v.length>10)?30:34);
+  const text=lines.map((line,i)=>`<text x='180' y='${yBase+i*lineGap}' text-anchor='middle' font-family='Arial, Helvetica, sans-serif' font-size='${fontSize}' font-weight='800' fill='#111111' letter-spacing='0.2'>${svgEsc(line)}</text>`).join('');
+  const svg=`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 180'>
+    <rect width='360' height='180' rx='24' fill='#ffffff'/>
+    <rect x='7' y='7' width='346' height='166' rx='20' fill='none' stroke='#d9d9d9' stroke-width='2.5'/>
+    ${text}
   </svg>`;
   return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg)
 }
-const LOGO_DOMAINS=window.LIGHTER_LOGO_DOMAINS||{};
-const LOGO_OVERRIDES=window.LIGHTER_LOGO_OVERRIDES||{};
+const LOGO_DOMAINS={};
+const LOGO_OVERRIDES={};
 function logoKeyName(name){return displayBrandName(name)}
-function highResOverride(name){return LOGO_OVERRIDES[logoKeyName(name)]||LOGO_OVERRIDES[canonicalBrandName(name)]||''}
-function brandLogoHTML(name,variant='card'){const fallback=makerMarkData(name),override=highResOverride(name);return `<div class="brand-logo ${variant}"><img data-brand-logo="${esc(canonicalBrandName(name))}" data-logo-fallback="${esc(fallback)}" src="${esc(override||fallback)}" alt="${esc(displayBrandName(name))} logo"></div>`}
-function logoCache(){return getJSON('lighterLogoCacheV4',{})}
-function setLogoCache(name,url){const c=logoCache();c[name]=url||'__none__';setJSON('lighterLogoCacheV4',c)}
-function commonsLogoQuery(name){
-  const label=displayBrandName(name),q=`${label} logo`;
-  const url='https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrlimit=12&gsrsearch='+encodeURIComponent(q)+'&prop=imageinfo&iiprop=url|size|mime&iiurlwidth=800&format=json&origin=*';
-  return fetch(url,{mode:'cors'}).then(r=>r.ok?r.json():Promise.reject(new Error('commons'))).then(j=>{
-    const pages=Object.values(j?.query?.pages||{});if(!pages.length)return '';
-    const toks=label.toLowerCase().split(/[^a-z0-9]+/).filter(t=>t.length>2);
-    const ranked=pages.map(p=>{
-      const title=String(p.title||'').toLowerCase(),info=(p.imageinfo||[])[0]||{},mime=String(info.mime||''),original=info.url||'',thumb=info.thumburl||original;
-      let score=0;
-      score+=/logo|wordmark|trademark|brand mark/.test(title)?8:0;
-      score+=toks.filter(t=>title.includes(t)).length*4;
-      if(toks.length&&toks.every(t=>title.includes(t)))score+=5;
-      if(mime==='image/svg+xml'||/\.svg(?:$|\?)/i.test(original))score+=5;
-      const w=Number(info.width||0),h=Number(info.height||0);
-      if(w>=500||h>=250)score+=2;
-      if(/person|portrait|actor|singer|song|album|mark ronson|bruno mars|politician|navy|admiral|photo|headshot/.test(title))score-=20;
-      const u=(mime==='image/svg+xml'&&original)?original:thumb;
-      return {u,score,title}
-    }).filter(x=>x.u&&x.score>=9).sort((a,b)=>b.score-a.score);
-    return ranked[0]?.u||'';
-  }).catch(()=>"")
+function highResOverride(name){return ''}
+function brandLogoHTML(name,variant='card'){
+  if(shouldOmitLogo(name))return `<div class="brand-logo ${variant} brand-logo-empty" aria-hidden="true"><span>—</span></div>`;
+  const fallback=makerMarkData(name);
+  return `<div class="brand-logo ${variant}"><img src="${esc(fallback)}" alt="${esc(displayBrandName(name))} logo"></div>`
 }
-const logoObserver=('IntersectionObserver'in window)?new IntersectionObserver(entries=>{for(const e of entries)if(e.isIntersecting){logoObserver.unobserve(e.target);resolveBrandLogo(e.target)}} ,{rootMargin:'260px'}):null;
-async function resolveBrandLogo(img){
-  if(!img||img.dataset.logoResolved==='1')return;
-  img.dataset.logoResolved='1';
-  const name=img.dataset.brandLogo;
-  const fallback=img.dataset.logoFallback||makerMarkData(name);
-  const override=highResOverride(name);
-  const domain=(LOGO_DOMAINS[displayBrandName(name)]||LOGO_DOMAINS[canonicalBrandName(name)]||'').trim();
-  img.onerror=()=>{img.onerror=null;img.src=fallback;img.classList.add('logo-fallback')};
-  if(override){img.src=override;return}
-  const cache=logoCache(),cached=cache[name];
-  if(cached){img.src=cached==='__none__'?fallback:cached;return}
-  if(domain){
-    const clearbit=`https://logo.clearbit.com/${domain}`;
-    setLogoCache(name,clearbit);
-    img.src=clearbit;
-    return;
-  }
-  setLogoCache(name,'__none__');
-  img.src=fallback;
-}
-function bindBrandLogos(root=document){root.querySelectorAll('img[data-brand-logo]').forEach(img=>{if(logoObserver)logoObserver.observe(img);else resolveBrandLogo(img)})}
+function logoCache(){return {}}
+function setLogoCache(name,url){}
+function commonsLogoQuery(name){return Promise.resolve('')}
+const logoObserver=null;
+async function resolveBrandLogo(img){return}
+function bindBrandLogos(root=document){}
 const ORIGIN_MAP={
   'Dunhill':'英國','S.T. Dupont':'法國','Thorens':'瑞士','Ronson':'美國','Evans':'美國','KW':'奧地利','Hahway':'德國','IMCO':'奧地利','Cartier':'法國','Mylflam':'奧地利','Cyklon':'德國','ASR':'美國','Scripto':'美國','Beattie':'美國','Elgin American':'美國','Negbaur':'美國','Bowers':'美國','Blake Manufacturing':'美國','Regens':'美國','Park Sherman':'美國','Nimrod':'英國','Kaschie':'德國','Champ':'日本','Karat':'日本','Zippo':'美國','Colibri':'英國','Penguin':'日本','Maruman':'日本','Prince':'日本','Flaminaire':'法國','Rowenta':'德國','Brother-Lite':'日本','Kiribi':'日本','BIC':'法國','Cricket':'瑞士','Clipper':'西班牙','Sarome':'日本','Windmill':'日本','Prometheus':'美國','XIKAR':'美國','ZORRO':'中國','Tsubota Pearl':'日本','Douglass':'日本','Sillems':'荷蘭','Braun':'德國','Penguin Japan':'日本'
 };
@@ -276,46 +250,42 @@ function countBy(rows,getter){const map=new Map();for(const r of rows){const k=g
 function statBars(title,rows,limit=8){if(!rows.length)return `<section class="stat-panel"><h3>${esc(title)}</h3><div class="stat-empty">尚無資料</div></section>`;const max=Math.max(...rows.map(x=>x[1]));return `<section class="stat-panel"><h3>${esc(title)}</h3><div class="bar-list">${rows.slice(0,limit).map(([name,n])=>`<div class="bar-row"><div class="bar-label"><span>${esc(name)}</span><b>${n}</b></div><div class="bar-track"><i style="width:${Math.max(5,n/max*100)}%"></i></div></div>`).join('')}</div></section>`}
 function moneyStats(rows){const by={};for(const {m} of rows){const n=Number(m.price);if(!Number.isFinite(n)||n<0||m.price==='')continue;const c=m.currency||'未指定';if(!by[c])by[c]={sum:0,count:0};by[c].sum+=n;by[c].count++}return Object.entries(by).sort((a,b)=>b[1].sum-a[1].sum)}
 function renderStats(){filters.style.display='none';q.parentElement.style.display='none';status.textContent='';const rows=ownedRecords(),favCount=favoriteModels().length,brandCount=new Set(rows.map(r=>r.brand)).size,withPrice=rows.filter(r=>r.m.price!==''&&Number.isFinite(Number(r.m.price))).length,money=moneyStats(rows),brandRows=countBy(rows,r=>r.brand),regionRows=countBy(rows,r=>r.brandInfo?.region||'未分類'),tierRows=countBy(rows,r=>r.brandInfo?.tier||'未分類'),sourceRows=countBy(rows,r=>sourceLabel(r.m)||'未填來源'),yearRows=countBy(rows,r=>r.m.purchaseYear||(r.m.purchaseDate||'').slice(0,4)||'未填年份');const recent=[...rows].sort((a,b)=>String(b.m.purchaseDate||b.m.added).localeCompare(String(a.m.purchaseDate||a.m.added))).slice(0,6);results.innerHTML=`<section class="stats-page"><div class="stats-hero"><div><small>MY COLLECTION</small><h2>▥ 收藏統計</h2><p>只統計已勾選「已收藏」的型號；最愛仍維持原本獨立狀態。</p></div></div><div class="stat-cards"><div><span>已收藏</span><b>${rows.length}</b><small>件</small></div><div><span>收藏品牌</span><b>${brandCount}</b><small>個</small></div><div><span>最愛型號</span><b>${favCount}</b><small>筆</small></div><div><span>保養 / 維修</span><b>${rows.reduce((n,r)=>n+(r.m.maintenance?.length||0),0)}</b><small>筆</small></div></div>${money.length?`<section class="stat-panel"><h3>購入金額</h3><p class="stat-note">不同幣別不混加，避免匯率造成錯誤。</p><div class="money-grid">${money.map(([cur,v])=>`<div><span>${esc(cur)}</span><b>${Number(v.sum).toLocaleString(undefined,{maximumFractionDigits:2})}</b><small>${v.count} 件 · 平均 ${Number(v.sum/v.count).toLocaleString(undefined,{maximumFractionDigits:2})}</small></div>`).join('')}</div></section>`:''}<div class="stats-grid">${statBars('品牌數量',brandRows)}${statBars('收藏 Tier',tierRows)}${statBars('品牌地區',regionRows)}${statBars('購買來源',sourceRows)}${statBars('購買年份',yearRows)}</div><section class="stat-panel"><h3>最近加入收藏</h3>${recent.length?`<div class="recent-list">${recent.map(r=>`<button data-stat-brand="${esc(r.brand)}" data-stat-index="${r.index}"><span class="collection-number">${esc(r.m.collectionNo||'—')}</span><div><b>${esc(r.brand)} · ${esc(r.m.model)}</b><small>${esc(r.m.purchaseDate||r.m.purchaseYear||'未填購買日期')}${r.m.price!==''?' · '+esc(formatPrice(r.m)):''}</small></div><span>›</span></button>`).join('')}</div>`:'<div class="stat-empty">還沒有已收藏資料。</div>'}</section></section>`;results.querySelectorAll('[data-stat-brand]').forEach(b=>b.onclick=()=>openBrand(b.dataset.statBrand,+b.dataset.statIndex))}
-const KNOWLEDGE_PHOTOS={
-  history:[
-    {src:'https://upload.wikimedia.org/wikipedia/commons/8/85/Cigarette_Lighter_Collection%2C_Zippo%2C_Western_Electric%2C_Ronson%2C_Boise_Cascade_%26_More_%288490212104%29.jpg',caption:'不同年代與形式的打火機收藏，可直接觀察外殼比例、點火結構與材質差異。',credit:'Joe Haupt · CC BY-SA 2.0',page:'https://commons.wikimedia.org/wiki/File:Cigarette_Lighter_Collection,_Zippo,_Western_Electric,_Ronson,_Boise_Cascade_%26_More_(8490212104).jpg'},
-    {src:'https://upload.wikimedia.org/wikipedia/commons/d/d2/Zippo_open.jpg',caption:'典型液態燃料 windproof lighter：可看到風罩、火輪與上蓋。',credit:'Hu Totya · CC BY 3.0',page:'https://commons.wikimedia.org/wiki/File:Zippo_open.jpg'}
-  ],
-  mechanisms:[
-    {src:'https://upload.wikimedia.org/wikipedia/commons/d/d2/Zippo_open.jpg',caption:'Petrol / naphtha 類：重點看棉芯、火輪、風罩與可抽出的內膽。',credit:'Hu Totya · CC BY 3.0',page:'https://commons.wikimedia.org/wiki/File:Zippo_open.jpg'},
-    {src:'https://upload.wikimedia.org/wikipedia/commons/f/f6/Disassembled_butane_lighter_%285%29.jpg',caption:'拆解的丁烷打火機：能看到氣體相關零件與點火組件，與煤油棉芯結構很不同。',credit:'Suyash Dwivedi · CC BY-SA 4.0',page:'https://commons.wikimedia.org/wiki/File:Disassembled_butane_lighter_(5).jpg'},
-    {src:'https://upload.wikimedia.org/wikipedia/commons/0/02/Butane_lighter_piezo_%283%29.jpg',caption:'壓電點火組件示例：按壓時由壓電模組產生高壓火花，不需要傳統火石輪。',credit:'Suyash Dwivedi · CC BY-SA 4.0',page:'https://commons.wikimedia.org/wiki/File:Butane_lighter_piezo_(3).jpg'}
-  ],
-  maintenance:[
-    {src:'https://upload.wikimedia.org/wikipedia/commons/f/f6/Disassembled_butane_lighter_%285%29.jpg',caption:'維修前先確認結構；丁烷機拆開後零件多且包含閥門 / 點火組件，不適合盲拆。',credit:'Suyash Dwivedi · CC BY-SA 4.0',page:'https://commons.wikimedia.org/wiki/File:Disassembled_butane_lighter_(5).jpg'},
-    {src:'https://upload.wikimedia.org/wikipedia/commons/d/d2/Zippo_open.jpg',caption:'煤油類機構相對直觀，但火石管、棉芯與內膽仍要先確認狀況再處理。',credit:'Hu Totya · CC BY 3.0',page:'https://commons.wikimedia.org/wiki/File:Zippo_open.jpg'}
-  ],
-  storage:[
-    {src:'https://upload.wikimedia.org/wikipedia/commons/8/85/Cigarette_Lighter_Collection%2C_Zippo%2C_Western_Electric%2C_Ronson%2C_Boise_Cascade_%26_More_%288490212104%29.jpg',caption:'分格收納的實例：避免彼此刮擦，也方便每一件收藏保留獨立紀錄。',credit:'Joe Haupt · CC BY-SA 2.0',page:'https://commons.wikimedia.org/wiki/File:Cigarette_Lighter_Collection,_Zippo,_Western_Electric,_Ronson,_Boise_Cascade_%26_More_(8490212104).jpg'}
-  ],
-  collecting:[
-    {src:'https://upload.wikimedia.org/wikipedia/commons/8/85/Cigarette_Lighter_Collection%2C_Zippo%2C_Western_Electric%2C_Ronson%2C_Boise_Cascade_%26_More_%288490212104%29.jpg',caption:'收藏可以同時包含不同品牌、材質、年代與機構；不必只追單一品牌。',credit:'Joe Haupt · CC BY-SA 2.0',page:'https://commons.wikimedia.org/wiki/File:Cigarette_Lighter_Collection,_Zippo,_Western_Electric,_Ronson,_Boise_Cascade_%26_More_(8490212104).jpg'},
-    {src:'https://upload.wikimedia.org/wikipedia/commons/a/ae/BIC_lighter_2008-12-31.jpg',caption:'現代一次性丁烷打火機示例：收藏性、機構、維修方式都和古董金屬機不同。',credit:'Sun Ladder · CC BY-SA 3.0',page:'https://commons.wikimedia.org/wiki/File:BIC_lighter_2008-12-31.jpg'}
-  ],
-  authentication:[
-    {src:'https://upload.wikimedia.org/wikipedia/commons/2/24/Zippo_bottom.jpg',caption:'底印是辨識年代與真偽的重要線索之一；要看字體、位置、符號與整體是否吻合。',credit:'Hu Totya · CC BY 3.0',page:'https://commons.wikimedia.org/wiki/File:Zippo_bottom.jpg'}
-  ],
-  buying:[
-    {src:'https://upload.wikimedia.org/wikipedia/commons/2/24/Zippo_bottom.jpg',caption:'買中古機時，底部照片一定要清楚；Logo、Made in、專利、日期碼、材質標記都可能有用。',credit:'Hu Totya · CC BY 3.0',page:'https://commons.wikimedia.org/wiki/File:Zippo_bottom.jpg'},
-    {src:'https://upload.wikimedia.org/wikipedia/commons/d/d2/Zippo_open.jpg',caption:'頂部與鉸鏈也要拍：只看正面外殼通常不足以確認型號或原裝度。',credit:'Hu Totya · CC BY 3.0',page:'https://commons.wikimedia.org/wiki/File:Zippo_open.jpg'}
-  ],
-  safety:[
-    {src:'https://upload.wikimedia.org/wikipedia/commons/c/c9/White_lighter_with_flame.JPG',caption:'補油、加氣、拆修與測漏時，都應遠離已點燃的火焰並保持通風。',credit:'Kimmo Palosaari · Public Domain',page:'https://commons.wikimedia.org/wiki/File:White_lighter_with_flame.JPG'}
-  ],
-  checklist:[
-    {src:'https://upload.wikimedia.org/wikipedia/commons/8/85/Cigarette_Lighter_Collection%2C_Zippo%2C_Western_Electric%2C_Ronson%2C_Boise_Cascade_%26_More_%288490212104%29.jpg',caption:'陌生打火機先從外形、機構、底印與品相逐項記錄，再查品牌與年代。',credit:'Joe Haupt · CC BY-SA 2.0',page:'https://commons.wikimedia.org/wiki/File:Cigarette_Lighter_Collection,_Zippo,_Western_Electric,_Ronson,_Boise_Cascade_%26_More_(8490212104).jpg'}
-  ]
+
+const monoGuideFigure=(title,items=[])=>{
+  const safe=items.slice(0,5).map(v=>String(v));
+  const height=140+safe.length*56;
+  const blocks=safe.map((v,i)=>{
+    const y=92+i*56;
+    return `<g><circle cx='46' cy='${y}' r='17' fill='none' stroke='#111' stroke-width='2.5'/><text x='46' y='${y+6}' text-anchor='middle' font-family='Arial, Helvetica, sans-serif' font-size='18' font-weight='700' fill='#111'>${i+1}</text><text x='78' y='${y+6}' font-family='Arial, Helvetica, sans-serif' font-size='22' font-weight='600' fill='#111'>${svgEsc(v)}</text></g>`;
+  }).join('');
+  const svg=`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 ${height}'>
+    <rect width='900' height='${height}' rx='28' fill='#ffffff'/>
+    <rect x='10' y='10' width='880' height='${height-20}' rx='22' fill='none' stroke='#121212' stroke-width='3'/>
+    <text x='44' y='54' font-family='Arial, Helvetica, sans-serif' font-size='34' font-weight='800' fill='#111'>${svgEsc(title)}</text>
+    <line x1='42' x2='858' y1='72' y2='72' stroke='#111' stroke-width='2'/>
+    ${blocks}
+  </svg>`;
+  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg)
 };
-function knowledgePhotosHTML(id,title){const ps=KNOWLEDGE_PHOTOS[id]||[];if(!ps.length)return '';return `<div class="knowledge-photo-grid">${ps.map((p,i)=>`<figure class="knowledge-photo"><a href="${esc(safeUrl(p.page))}" target="_blank" rel="noopener"><img loading="lazy" src="${esc(safeUrl(p.src))}" alt="${esc(title)} 參考照片 ${i+1}"></a><figcaption><span>${esc(p.caption)}</span><small>圖片：${esc(p.credit)} · Wikimedia Commons</small></figcaption></figure>`).join('')}</div>`}
+const KNOWLEDGE_PHOTOS={
+  history:[{src:monoGuideFigure('打火機歷史速覽',['1820s 化學點火裝置','1900s 火石輪與煤油機','1930s Windproof 與量產','1950s 丁烷精品化','1960s 壓電與電子點火']),caption:'用時間軸先抓大方向：先分年代，再看燃料與點火機構。',credit:'Lighter DataBase 圖解',page:''}],
+  mechanisms:[{src:monoGuideFigure('機構 / 類型辨識',['先分燃料：煤油 / 丁烷','再看點火：火石輪 / 壓電','再看動作：手動 / 自動','觀察頂部、火口、火輪與加油口','拍操作影片最能幫助辨識']),caption:'先看燃料，再看點火，再看開蓋與出火動作，通常就能縮小類型。',credit:'Lighter DataBase 圖解',page:''}],
+  maintenance:[{src:monoGuideFigure('日常保養',['少拆、少磨、先辨識','火石卡死先查火石管','外殼先乾布，別急著拋光','古董丁烷機不要盲拆','零件更換先保留原件']),caption:'保養以保留原裝為優先；不熟的機構先查資料再動手。',credit:'Lighter DataBase 圖解',page:''}],
+  storage:[{src:monoGuideFigure('長期收藏與保存',['展示可考慮不留大量燃料','避免高濕、曝曬與劇烈溫差','原盒與配件分開保存','建立購入前後照片基準']),caption:'保存重點是穩定環境與完整紀錄，不是把外殼擦到像新的一樣。',credit:'Lighter DataBase 圖解',page:''}],
+  collecting:[{src:monoGuideFigure('收藏入門',['先決定主題：品牌 / 機構 / 年代','品牌等級不等於每一顆都高價','原裝度通常比亮度更重要','成交價比刊登價更有參考性']),caption:'先有收藏主題，再看型號、年代與原裝度，能大幅降低亂買風險。',credit:'Lighter DataBase 圖解',page:''}],
+  authentication:[{src:monoGuideFigure('年份與真偽辨識',['先確認品牌與系列','再看底印、刻字與材質標記','再比機構細節是否合理','最後檢查年代一致性']),caption:'不要只看 Logo；真正可靠的是多個特徵能互相對上。',credit:'Lighter DataBase 圖解',page:''}],
+  buying:[{src:monoGuideFigure('買中古打火機前檢查',['至少要正反面、頂部、底部照','補拍鉸鏈、火輪、加油 / 加氣口','Automatic 最好要操作影片','修復痕跡、漏氣、缺件要問清楚']),caption:'照片越完整，越能避免買錯型號或忽略重要缺件。',credit:'Lighter DataBase 圖解',page:''}],
+  safety:[{src:monoGuideFigure('安全原則',['補油 / 加氣時遠離火源','疑似漏氣就停止使用','不熟悉的高價古董不要強拆','有燃料的打火機避免高熱環境']),caption:'老打火機既是收藏品，也是燃料容器與點火裝置，安全永遠優先。',credit:'Lighter DataBase 圖解',page:''}],
+  checklist:[{src:monoGuideFigure('30 秒收藏檢查表',['記下名稱、Logo、專利號','先分結構：煤油 / 丁烷 / 自動','拍清底印、序號、材質標記','檢查掉鍍、裂痕、焊補與缺件','把價格、來源與照片一併存檔']),caption:'看見陌生老機時，先按這個順序記錄，後續查證會快很多。',credit:'Lighter DataBase 圖解',page:''}]
+};
+function knowledgePhotosHTML(id,title){
+  const ps=KNOWLEDGE_PHOTOS[id]||[];if(!ps.length)return '';
+  return `<div class="knowledge-photo-grid">${ps.map((p,i)=>{const img=`<img loading="lazy" src="${esc(safeUrl(p.src))}" alt="${esc(title)} 參考圖 ${i+1}">`;const body=p.page?`<a href="${esc(safeUrl(p.page))}" target="_blank" rel="noopener">${img}</a>`:img;return `<figure class="knowledge-photo">${body}<figcaption><span>${esc(p.caption)}</span><small>圖解：${esc(p.credit)}</small></figcaption></figure>`}).join('')}</div>`
+}
 function knowledgeArticleHTML(k){return `<details class="knowledge-card" data-knowledge="${esc(k.id)}"><summary><span class="knowledge-icon">${esc(k.icon)}</span><div><h3>${esc(k.title)}</h3><p>${esc(k.summary)}</p></div><span class="knowledge-arrow">⌄</span></summary><div class="knowledge-body">${knowledgePhotosHTML(k.id,k.title)}${(k.sections||[]).map(s=>`<section><h4>${esc(s.title)}</h4><p>${esc(s.body)}</p></section>`).join('')}${k.sources?.length?`<div class="knowledge-sources"><b>延伸資料</b>${k.sources.map(a=>`<a href="${esc(safeUrl(a.url))}" target="_blank" rel="noopener">${esc(a.name)} ↗</a>`).join('')}</div>`:''}</div></details>`}
 function knowledgeLinksHTML(){const a=links();return `<details class="knowledge-card resource-card"><summary><span class="knowledge-icon">↗</span><div><h3>資料庫與收藏社群</h3><p>把原本的參考資料整合進知識區，避免導航列太碎。</p></div><span class="knowledge-arrow">⌄</span></summary><div class="knowledge-body"><div id="knowledgeLinks">${a.map((l,i)=>`<div class="linkrow"><div><b>${esc(l.name)}</b>${l.note?`<div class="note">${esc(l.note)}</div>`:''}<a class="source" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener">開啟網站 ↗</a></div><button class="danger" data-klinkdel="${i}">刪除</button></div>`).join('')}</div><form id="knowledgeLinkForm" class="form compact-form"><div class="field"><label>網站名稱</label><input name="name" required></div><div class="field"><label>網址</label><input name="url" type="url" required></div><div class="field full"><label>用途 / 備註</label><input name="note"></div><button class="full">＋ 新增參考網址</button></form></div></details>`}
 function bindKnowledgeLinks(){const f=document.querySelector('#knowledgeLinkForm');if(f)f.onsubmit=e=>{e.preventDefault();const fd=new FormData(f),a=links();a.push({name:fd.get('name').trim(),url:fd.get('url').trim(),note:fd.get('note').trim()});setJSON('lighterLinks',a);renderKnowledge()};document.querySelectorAll('[data-klinkdel]').forEach(b=>b.onclick=()=>{if(confirm('刪除這個網址？')){const a=links();a.splice(+b.dataset.klinkdel,1);setJSON('lighterLinks',a);renderKnowledge()}})}
-function renderKnowledge(){filters.style.display='none';q.parentElement.style.display='none';status.textContent='';results.innerHTML=`<section class="knowledge-page"><div class="knowledge-hero"><small>LIGHTER KNOWLEDGE</small><h2>📘 打火機知識庫</h2><p>歷史、機構、保養、保存、收藏與辨識的基礎手冊。內容以收藏安全與「保留原裝」為優先。</p></div><div class="knowledge-search"><input id="knowledgeSearch" placeholder="搜尋：火石、丁烷、保養、真偽、歷史…"><button id="knowledgeClear">×</button></div><div class="knowledge-warning">⚠ 古董打火機的材質、密封與機構差異很大；知識庫提供一般原則，稀有或高價品拆修前仍應查該型號資料。</div><div id="knowledgeList">${KNOWLEDGE.map(knowledgeArticleHTML).join('')}${knowledgeLinksHTML()}</div></section>`;bindKnowledgeLinks();const input=document.querySelector('#knowledgeSearch'),list=document.querySelector('#knowledgeList');const apply=()=>{const t=norm(input.value.trim());const data=!t?KNOWLEDGE:KNOWLEDGE.filter(k=>norm([k.title,k.summary,...(k.sections||[]).flatMap(s=>[s.title,s.body])].join(' ')).includes(t));list.innerHTML=(data.length?data.map(knowledgeArticleHTML).join(''):'<div class="empty small">找不到符合的知識文章。</div>')+(!t?knowledgeLinksHTML():'');bindKnowledgeLinks()};input.oninput=apply;document.querySelector('#knowledgeClear').onclick=()=>{input.value='';input.focus();apply()}}
+function renderKnowledge(){filters.style.display='none';q.parentElement.style.display='none';status.textContent='';results.innerHTML=`<section class="knowledge-page"><div class="knowledge-hero"><small>LIGHTER KNOWLEDGE</small><h2>🕮 打火機知識庫</h2><p>歷史、機構、保養、保存、收藏與辨識的基礎手冊。內容以收藏安全與「保留原裝」為優先。</p></div><div class="knowledge-search"><input id="knowledgeSearch" placeholder="搜尋：火石、丁烷、保養、真偽、歷史…"><button id="knowledgeClear">×</button></div><div class="knowledge-warning">⚠ 古董打火機的材質、密封與機構差異很大；知識庫提供一般原則，稀有或高價品拆修前仍應查該型號資料。</div><div id="knowledgeList">${KNOWLEDGE.map(knowledgeArticleHTML).join('')}${knowledgeLinksHTML()}</div></section>`;bindKnowledgeLinks();const input=document.querySelector('#knowledgeSearch'),list=document.querySelector('#knowledgeList');const apply=()=>{const t=norm(input.value.trim());const data=!t?KNOWLEDGE:KNOWLEDGE.filter(k=>norm([k.title,k.summary,...(k.sections||[]).flatMap(s=>[s.title,s.body])].join(' ')).includes(t));list.innerHTML=(data.length?data.map(knowledgeArticleHTML).join(''):'<div class="empty small">找不到符合的知識文章。</div>')+(!t?knowledgeLinksHTML():'');bindKnowledgeLinks()};input.oninput=apply;document.querySelector('#knowledgeClear').onclick=()=>{input.value='';input.focus();apply()}}
 
 function renderLinks(){let a=links();results.innerHTML=`<div class="about"><h2>參考資料</h2><p>把常用的收藏資料庫、論壇、文章或賣場放在這裡。</p><form id="linkForm" class="form"><div class="field"><label>網站名稱</label><input name="name" required placeholder="例如 Lighter Library"></div><div class="field"><label>網址</label><input name="url" type="url" required placeholder="https://…"></div><div class="field full"><label>用途 / 備註</label><input name="note" placeholder="例如：查製造商、專利、型錄"></div><button class="full">＋ 新增網址</button></form><div>${a.map((l,i)=>`<div class="linkrow"><div><b>${esc(l.name)}</b>${l.note?`<div class="note">${esc(l.note)}</div>`:''}<a class="source" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener">開啟網站 ↗</a></div><button class="danger" data-linkdel="${i}">刪除</button></div>`).join('')}</div></div>`;document.querySelector('#linkForm').onsubmit=e=>{e.preventDefault();let fd=new FormData(e.target),a=links();a.push({name:fd.get('name').trim(),url:fd.get('url').trim(),note:fd.get('note').trim()});setJSON('lighterLinks',a);render()};results.querySelectorAll('[data-linkdel]').forEach(b=>b.onclick=()=>{if(confirm('刪除這個網址？')){let a=links();a.splice(+b.dataset.linkdel,1);setJSON('lighterLinks',a);render()}})}
 async function exportBackup(){const db=models(),photos={};for(const arr of Object.values(db)){for(const m0 of arr){const m=normalizeModel(m0);try{const ps=await getPhotos(m.id);if(ps.length)photos[m.id]=await Promise.all(ps.map(blobToDataURL))}catch{}}}for(const h of aiHistory()){try{const ps=await getPhotos('aihist-'+h.id);if(ps.length)photos['aihist-'+h.id]=await Promise.all(ps.map(blobToDataURL))}catch{}}const data={version:11,exported:new Date().toISOString(),saved:saved(),models:db,links:links(),brandNotes:brandNotes(),brandAliases:userAliases(),aiEndpoint:aiEndpoint(),aiCostLog:getJSON('lighterAICostLog',[]),aiHistory:aiHistory(),photos},blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`lighter-db-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
@@ -325,14 +295,4 @@ function navState(extra={}){return {lighterDB:true,view,brand:currentBrand,editI
 function closeModalDirect(){modal.classList.add('hidden');document.body.classList.remove('lock');currentBrand=null;currentEditIndex=null}
 function applyNavState(state){const s=state&&state.lighterDB?state:{lighterDB:true,view:'db',brand:null,editIndex:null,sidebar:false};closeSidebarDirect();view=s.view||'db';currentBrand=null;currentEditIndex=null;document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===view));document.querySelectorAll('[data-side-view]').forEach(x=>x.classList.toggle('active',x.dataset.sideView===view));closeModalDirect();render();if(s.brand)openBrand(s.brand,s.editIndex??null,null,'none');if(s.sidebar)openSidebarDirect()}
 function render(){if(view==='mine'){renderFavorites();return}if(view==='stats'){renderStats();return}if(view==='knowledge'){renderKnowledge();return}if(view==='backup'){filters.style.display='none';q.parentElement.style.display='none';status.textContent='';renderBackup();return}if(view==='ai'){filters.style.display='none';q.parentElement.style.display='none';status.textContent='';renderAI();return}filters.style.display='flex';q.parentElement.style.display='flex';let data=all;let term=norm(q.value.trim());if(term)data=data.filter(x=>norm([x.name,displayBrandName(x.name),originLabel(x),...brandAliases(x.name)].join(' ')).includes(term));if(tier!=='全部')data=data.filter(x=>x.tier===tier);status.textContent=`找到 ${data.length} 筆${term?' · 搜尋「'+q.value.trim()+'」':''}`;results.innerHTML=data.length?data.map(card).join(''):`<div class="empty"><b>${term?'目前資料庫沒有找到':'這裡目前是空的'}</b>${term?'這不代表它不是品牌。請保留名稱，之後再查證並加入資料庫。':'點品牌右側 ★ 就能加入品牌收藏。'}</div>`;bindCards();bindBrandLogos(results)}
-q.oninput=render;document.querySelector('#clear').onclick=()=>{q.value='';q.focus();render()};const menuBtn=document.querySelector('#menuBtn'),sidebar=document.querySelector('#sidebar'),sidebarScrim=document.querySelector('#sidebarScrim'),closeSidebarBtn=document.querySelector('#closeSidebar');function openSidebarDirect(){sidebar.classList.add('open');sidebarScrim.classList.remove('hidden');sidebar.setAttribute('aria-hidden','false');menuBtn.setAttribute('aria-expanded','true');document.body.classList.add('sidebar-lock')}function closeSidebarDirect(){sidebar.classList.remove('open');sidebarScrim.classList.add('hidden');sidebar.setAttribute('aria-hidden','true');menuBtn.setAttribute('aria-expanded','false');document.body.classList.remove('sidebar-lock')}function openSidebar(){if(sidebar.classList.contains('open'))return;openSidebarDirect();history.pushState(navState({sidebar:true}),'',location.href)}function closeSidebar(){if(sidebar.classList.contains('open')&&history.state?.sidebar)history.back();else closeSidebarDirect()}menuBtn.onclick=openSidebar;closeSidebarBtn.onclick=closeSidebar;sidebarScrim.onclick=closeSidebar;function setView(next){if(!next)return;const sidebarWasOpen=sidebar.classList.contains('open')&&history.state?.sidebar;closeSidebarDirect();if(next===view&&!currentBrand){if(sidebarWasOpen)history.replaceState(navState(),'',location.href);return}view=next;closeModalDirect();document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===next));document.querySelectorAll('[data-side-view]').forEach(x=>x.classList.toggle('active',x.dataset.sideView===next));render();if(sidebarWasOpen)history.replaceState(navState(),'',location.href);else history.pushState(navState(),'',location.href)}document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>setView(b.dataset.view));document.querySelectorAll('[data-side-view]').forEach(b=>b.onclick=()=>setView(b.dataset.sideView));document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(sidebar.classList.contains('open'))closeSidebar();else if(currentBrand)history.back()}});function closeModalFromUI(){
-  const hadBrand=!!currentBrand;
-  if(hadBrand&&history.state?.brand){
-    history.back();
-    setTimeout(()=>{if(currentBrand)closeModalDirect()},180);
-  }else closeModalDirect();
-}
-const closeModalBtn=document.querySelector('#closeModal');
-closeModalBtn.onclick=e=>{e.preventDefault();e.stopPropagation();closeModalFromUI()};
-closeModalBtn.addEventListener('touchend',e=>{e.preventDefault();e.stopPropagation();closeModalFromUI()},{passive:false});
-modal.onclick=e=>{if(e.target===modal)closeModalFromUI()};window.addEventListener('popstate',e=>applyNavState(e.state));renderFilters();render();history.replaceState(navState(),'',location.href);if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+q.oninput=render;document.querySelector('#clear').onclick=()=>{q.value='';q.focus();render()};const menuBtn=document.querySelector('#menuBtn'),sidebar=document.querySelector('#sidebar'),sidebarScrim=document.querySelector('#sidebarScrim'),closeSidebarBtn=document.querySelector('#closeSidebar');function openSidebarDirect(){sidebar.classList.add('open');sidebarScrim.classList.remove('hidden');sidebar.setAttribute('aria-hidden','false');menuBtn.setAttribute('aria-expanded','true');document.body.classList.add('sidebar-lock')}function closeSidebarDirect(){sidebar.classList.remove('open');sidebarScrim.classList.add('hidden');sidebar.setAttribute('aria-hidden','true');menuBtn.setAttribute('aria-expanded','false');document.body.classList.remove('sidebar-lock')}function openSidebar(){if(sidebar.classList.contains('open'))return;openSidebarDirect();history.pushState(navState({sidebar:true}),'',location.href)}function closeSidebar(){if(sidebar.classList.contains('open')&&history.state?.sidebar)history.back();else closeSidebarDirect()}menuBtn.onclick=openSidebar;closeSidebarBtn.onclick=closeSidebar;sidebarScrim.onclick=closeSidebar;function setView(next){if(!next)return;const sidebarWasOpen=sidebar.classList.contains('open')&&history.state?.sidebar;closeSidebarDirect();if(next===view&&!currentBrand){if(sidebarWasOpen)history.replaceState(navState(),'',location.href);return}view=next;closeModalDirect();document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===next));document.querySelectorAll('[data-side-view]').forEach(x=>x.classList.toggle('active',x.dataset.sideView===next));render();if(sidebarWasOpen)history.replaceState(navState(),'',location.href);else history.pushState(navState(),'',location.href)}document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>setView(b.dataset.view));document.querySelectorAll('[data-side-view]').forEach(b=>b.onclick=()=>setView(b.dataset.sideView));document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(sidebar.classList.contains('open'))closeSidebar();else if(currentBrand)history.back()}});document.querySelector('#closeModal').onclick=()=>{if(currentBrand)history.back();else closeModalDirect()};modal.onclick=e=>{if(e.target===modal)document.querySelector('#closeModal').click()};window.addEventListener('popstate',e=>applyNavState(e.state));renderFilters();render();history.replaceState(navState(),'',location.href);if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');

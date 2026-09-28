@@ -1,4 +1,4 @@
-Lighter DataBase v12.0
+Lighter DataBase v12.1
 
 - Logo 不再放大 Google favicon；優先使用高解析 / SVG。
 - Commons 圖片改抓 640px，並用新版 cache，避免舊糊圖繼續被沿用。

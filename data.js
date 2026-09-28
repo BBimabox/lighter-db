@@ -1,4 +1,4 @@
-window.LIGHTERS=[
+window.LIGHTERS = [
   {
     "tier": "S+",
     "name": "Dunhill",
@@ -721,378 +721,378 @@ window.LIGHTERS=[
     "note": "有歷史、型錄、專利、設計或穩定收藏價值"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Knapp",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Rex / Rex-Lite",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Girey / S.O. Bigney",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Lifto-Lite",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Lektrolite",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "FumaLux",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Ideal Platinum Igniter",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Airflam",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Electro-Match",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Fisher",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Flamex",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Franklin",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Galter",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Magna Electric",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Magic Pocket Lamp",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Nassau",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Rogers",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Strikalite",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Sunex",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Storm King",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Storm Master",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Vulcan",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Winlite",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Weston",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Pyxis",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Packlite",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Prontolite",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Reliance",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Realite",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Raythor",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Omsco-Lite",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Nulite",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Morlite",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "MasterCraft",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Kleer Vue",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Kent",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Kingflame",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Havalite",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Hi-Glo",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Hi-Lite",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Firefly",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Firechief",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Everflow",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Excello",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Dura-Lux",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Cont-Lite",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Companion",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Crown Harp",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Blue Bird",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Brother-Lite",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Binalite",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Automet",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Amico",
     "region": "多國",
     "type": "小眾 Vintage",
     "note": "小眾但可能有特殊機構、年代或研究價值；值得逐件查"
   },
   {
-    "tier": "A-/B+",
+    "tier": "B+",
     "name": "Arrow",
     "region": "多國",
     "type": "小眾 Vintage",
@@ -1855,63 +1855,63 @@ window.LIGHTERS=[
     "note": "有品牌與年代性，但平均收藏地位較普通"
   },
   {
-    "tier": "B（現代）",
+    "tier": "A+",
     "name": "Zippo（普通現代款）",
     "region": "多國",
     "type": "現代收藏",
-    "note": "Zippo特殊早期/軍事/廣告/稀有款可升 A～S+；其餘視版本"
+    "note": "Zippo 普通款仍有明確品牌歷史與穩定收藏地位；早期、軍事、廣告與特殊款可再更高。"
   },
   {
-    "tier": "B（現代）",
+    "tier": "B",
     "name": "ZORRO",
     "region": "多國",
     "type": "現代收藏",
     "note": "Zippo特殊早期/軍事/廣告/稀有款可升 A～S+；其餘視版本"
   },
   {
-    "tier": "B（現代）",
+    "tier": "B",
     "name": "Douglass",
     "region": "多國",
     "type": "現代收藏",
     "note": "Zippo特殊早期/軍事/廣告/稀有款可升 A～S+；其餘視版本"
   },
   {
-    "tier": "B（現代）",
+    "tier": "B",
     "name": "Tsubota Pearl",
     "region": "多國",
     "type": "現代收藏",
     "note": "Zippo特殊早期/軍事/廣告/稀有款可升 A～S+；其餘視版本"
   },
   {
-    "tier": "B（現代）",
+    "tier": "B",
     "name": "Windmill（現代款）",
     "region": "多國",
     "type": "現代收藏",
     "note": "Zippo特殊早期/軍事/廣告/稀有款可升 A～S+；其餘視版本"
   },
   {
-    "tier": "B（現代）",
+    "tier": "B",
     "name": "Sarome（現代款）",
     "region": "多國",
     "type": "現代收藏",
     "note": "Zippo特殊早期/軍事/廣告/稀有款可升 A～S+；其餘視版本"
   },
   {
-    "tier": "B（現代）",
+    "tier": "B",
     "name": "XIKAR",
     "region": "多國",
     "type": "現代收藏",
     "note": "Zippo特殊早期/軍事/廣告/稀有款可升 A～S+；其餘視版本"
   },
   {
-    "tier": "B（現代）",
+    "tier": "B",
     "name": "Prometheus",
     "region": "多國",
     "type": "現代收藏",
     "note": "Zippo特殊早期/軍事/廣告/稀有款可升 A～S+；其餘視版本"
   },
   {
-    "tier": "B（現代）",
+    "tier": "B",
     "name": "Clipper",
     "region": "多國",
     "type": "現代收藏",
@@ -1995,7 +1995,7 @@ window.LIGHTERS=[
     "note": "收藏重點多為圖案、廣告、文化、包裝"
   },
   {
-    "tier": "S～A+",
+    "tier": "A+",
     "name": "無牌但可對應重要設計者 / 發明者 / Patent",
     "region": "全球",
     "type": "無牌專利/設計者",

@@ -1,4 +1,4 @@
-Lighter DataBase v12.2
+Lighter DataBase v12.3
 
 - 第一批 30 個常見品牌改用真實／常見 logo 圖形。
 - Prototype / 設計者 / Patent 類條目完全不顯示 logo 框。
@@ -7,7 +7,7 @@ Lighter DataBase v12.2
 - 知識區參考圖改成不同的 Wikimedia Commons 實物／結構照片，避免重複。
 - Zippo 維持 A+。
 
-Lighter DataBase v12.2
+Lighter DataBase v12.3
 
 - Logo 不再放大 Google favicon；優先使用高解析 / SVG。
 - Commons 圖片改抓 640px，並用新版 cache，避免舊糊圖繼續被沿用。
@@ -76,3 +76,11 @@ Lighter DB PWA v11.3
 ## v11.2
 - Android / PWA 返回鍵現在使用瀏覽器 History API：品牌、編輯、統計、AI、側邊功能可逐層返回，不再每次直接離開 App。
 - 收藏編號改為可編輯；留空仍自動產生 L0001 格式，並檢查重複編號。
+
+
+## v12.3
+- Curated real-logo batch restored for common brands, including the Dunhill vector mark.
+- Brand logo can be replaced by URL or uploaded image.
+- Added custom brand creation.
+- Brand Rank and origin are editable.
+- Full backup now includes custom brands, Rank/origin edits and user logo overrides.

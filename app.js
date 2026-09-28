@@ -42,21 +42,26 @@ function makerMarkData(name){
   </svg>`;
   return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg)
 }
-const LOGO_DOMAINS={};
-const LOGO_OVERRIDES={};
+
+const LOGO_DOMAINS=window.LIGHTER_LOGO_DOMAINS||{};
+const LOGO_OVERRIDES=window.LIGHTER_REAL_LOGOS||window.LIGHTER_LOGO_OVERRIDES||{};
 function logoKeyName(name){return displayBrandName(name)}
-function highResOverride(name){return ''}
+function highResOverride(name){return LOGO_OVERRIDES[logoKeyName(name)]||LOGO_OVERRIDES[canonicalBrandName(name)]||''}
 function brandLogoHTML(name,variant='card'){
-  if(shouldOmitLogo(name))return `<div class="brand-logo ${variant} brand-logo-empty" aria-hidden="true"><span>—</span></div>`;
-  const fallback=makerMarkData(name);
-  return `<div class="brand-logo ${variant}"><img src="${esc(fallback)}" alt="${esc(displayBrandName(name))} logo"></div>`
+  if(shouldOmitLogo(name))return '';
+  const fallback=makerMarkData(name),real=highResOverride(name);
+  return `<div class="brand-logo ${variant}${real?' real-logo':''}"><img data-logo-fallback="${esc(fallback)}" src="${esc(real||fallback)}" alt="${esc(displayBrandName(name))} logo"></div>`
 }
 function logoCache(){return {}}
 function setLogoCache(name,url){}
 function commonsLogoQuery(name){return Promise.resolve('')}
 const logoObserver=null;
-async function resolveBrandLogo(img){return}
-function bindBrandLogos(root=document){}
+function resolveBrandLogo(img){
+  if(!img)return;
+  const fallback=img.dataset.logoFallback||'';
+  img.onerror=()=>{img.onerror=null;if(fallback){img.src=fallback;img.classList.add('logo-fallback')}}
+}
+function bindBrandLogos(root=document){root.querySelectorAll('.brand-logo img').forEach(resolveBrandLogo)}
 const ORIGIN_MAP={
   'Dunhill':'英國','S.T. Dupont':'法國','Thorens':'瑞士','Ronson':'美國','Evans':'美國','KW':'奧地利','Hahway':'德國','IMCO':'奧地利','Cartier':'法國','Mylflam':'奧地利','Cyklon':'德國','ASR':'美國','Scripto':'美國','Beattie':'美國','Elgin American':'美國','Negbaur':'美國','Bowers':'美國','Blake Manufacturing':'美國','Regens':'美國','Park Sherman':'美國','Nimrod':'英國','Kaschie':'德國','Champ':'日本','Karat':'日本','Zippo':'美國','Colibri':'英國','Penguin':'日本','Maruman':'日本','Prince':'日本','Flaminaire':'法國','Rowenta':'德國','Brother-Lite':'日本','Kiribi':'日本','BIC':'法國','Cricket':'瑞士','Clipper':'西班牙','Sarome':'日本','Windmill':'日本','Prometheus':'美國','XIKAR':'美國','ZORRO':'中國','Tsubota Pearl':'日本','Douglass':'日本','Sillems':'荷蘭','Braun':'德國','Penguin Japan':'日本'
 };
@@ -251,41 +256,48 @@ function statBars(title,rows,limit=8){if(!rows.length)return `<section class="st
 function moneyStats(rows){const by={};for(const {m} of rows){const n=Number(m.price);if(!Number.isFinite(n)||n<0||m.price==='')continue;const c=m.currency||'未指定';if(!by[c])by[c]={sum:0,count:0};by[c].sum+=n;by[c].count++}return Object.entries(by).sort((a,b)=>b[1].sum-a[1].sum)}
 function renderStats(){filters.style.display='none';q.parentElement.style.display='none';status.textContent='';const rows=ownedRecords(),favCount=favoriteModels().length,brandCount=new Set(rows.map(r=>r.brand)).size,withPrice=rows.filter(r=>r.m.price!==''&&Number.isFinite(Number(r.m.price))).length,money=moneyStats(rows),brandRows=countBy(rows,r=>r.brand),regionRows=countBy(rows,r=>r.brandInfo?.region||'未分類'),tierRows=countBy(rows,r=>r.brandInfo?.tier||'未分類'),sourceRows=countBy(rows,r=>sourceLabel(r.m)||'未填來源'),yearRows=countBy(rows,r=>r.m.purchaseYear||(r.m.purchaseDate||'').slice(0,4)||'未填年份');const recent=[...rows].sort((a,b)=>String(b.m.purchaseDate||b.m.added).localeCompare(String(a.m.purchaseDate||a.m.added))).slice(0,6);results.innerHTML=`<section class="stats-page"><div class="stats-hero"><div><small>MY COLLECTION</small><h2>▥ 收藏統計</h2><p>只統計已勾選「已收藏」的型號；最愛仍維持原本獨立狀態。</p></div></div><div class="stat-cards"><div><span>已收藏</span><b>${rows.length}</b><small>件</small></div><div><span>收藏品牌</span><b>${brandCount}</b><small>個</small></div><div><span>最愛型號</span><b>${favCount}</b><small>筆</small></div><div><span>保養 / 維修</span><b>${rows.reduce((n,r)=>n+(r.m.maintenance?.length||0),0)}</b><small>筆</small></div></div>${money.length?`<section class="stat-panel"><h3>購入金額</h3><p class="stat-note">不同幣別不混加，避免匯率造成錯誤。</p><div class="money-grid">${money.map(([cur,v])=>`<div><span>${esc(cur)}</span><b>${Number(v.sum).toLocaleString(undefined,{maximumFractionDigits:2})}</b><small>${v.count} 件 · 平均 ${Number(v.sum/v.count).toLocaleString(undefined,{maximumFractionDigits:2})}</small></div>`).join('')}</div></section>`:''}<div class="stats-grid">${statBars('品牌數量',brandRows)}${statBars('收藏 Tier',tierRows)}${statBars('品牌地區',regionRows)}${statBars('購買來源',sourceRows)}${statBars('購買年份',yearRows)}</div><section class="stat-panel"><h3>最近加入收藏</h3>${recent.length?`<div class="recent-list">${recent.map(r=>`<button data-stat-brand="${esc(r.brand)}" data-stat-index="${r.index}"><span class="collection-number">${esc(r.m.collectionNo||'—')}</span><div><b>${esc(r.brand)} · ${esc(r.m.model)}</b><small>${esc(r.m.purchaseDate||r.m.purchaseYear||'未填購買日期')}${r.m.price!==''?' · '+esc(formatPrice(r.m)):''}</small></div><span>›</span></button>`).join('')}</div>`:'<div class="stat-empty">還沒有已收藏資料。</div>'}</section></section>`;results.querySelectorAll('[data-stat-brand]').forEach(b=>b.onclick=()=>openBrand(b.dataset.statBrand,+b.dataset.statIndex))}
 
-const monoGuideFigure=(title,items=[])=>{
-  const safe=items.slice(0,5).map(v=>String(v));
-  const height=140+safe.length*56;
-  const blocks=safe.map((v,i)=>{
-    const y=92+i*56;
-    return `<g><circle cx='46' cy='${y}' r='17' fill='none' stroke='#111' stroke-width='2.5'/><text x='46' y='${y+6}' text-anchor='middle' font-family='Arial, Helvetica, sans-serif' font-size='18' font-weight='700' fill='#111'>${i+1}</text><text x='78' y='${y+6}' font-family='Arial, Helvetica, sans-serif' font-size='22' font-weight='600' fill='#111'>${svgEsc(v)}</text></g>`;
-  }).join('');
-  const svg=`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 ${height}'>
-    <rect width='900' height='${height}' rx='28' fill='#ffffff'/>
-    <rect x='10' y='10' width='880' height='${height-20}' rx='22' fill='none' stroke='#121212' stroke-width='3'/>
-    <text x='44' y='54' font-family='Arial, Helvetica, sans-serif' font-size='34' font-weight='800' fill='#111'>${svgEsc(title)}</text>
-    <line x1='42' x2='858' y1='72' y2='72' stroke='#111' stroke-width='2'/>
-    ${blocks}
-  </svg>`;
-  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg)
-};
+
+const commonsFile=(name)=>'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(name);
+const commonsPage=(name)=>'https://commons.wikimedia.org/wiki/File:'+encodeURIComponent(name);
 const KNOWLEDGE_PHOTOS={
-  history:[{src:monoGuideFigure('打火機歷史速覽',['1820s 化學點火裝置','1900s 火石輪與煤油機','1930s Windproof 與量產','1950s 丁烷精品化','1960s 壓電與電子點火']),caption:'用時間軸先抓大方向：先分年代，再看燃料與點火機構。',credit:'Lighter DataBase 圖解',page:''}],
-  mechanisms:[{src:monoGuideFigure('機構 / 類型辨識',['先分燃料：煤油 / 丁烷','再看點火：火石輪 / 壓電','再看動作：手動 / 自動','觀察頂部、火口、火輪與加油口','拍操作影片最能幫助辨識']),caption:'先看燃料，再看點火，再看開蓋與出火動作，通常就能縮小類型。',credit:'Lighter DataBase 圖解',page:''}],
-  maintenance:[{src:monoGuideFigure('日常保養',['少拆、少磨、先辨識','火石卡死先查火石管','外殼先乾布，別急著拋光','古董丁烷機不要盲拆','零件更換先保留原件']),caption:'保養以保留原裝為優先；不熟的機構先查資料再動手。',credit:'Lighter DataBase 圖解',page:''}],
-  storage:[{src:monoGuideFigure('長期收藏與保存',['展示可考慮不留大量燃料','避免高濕、曝曬與劇烈溫差','原盒與配件分開保存','建立購入前後照片基準']),caption:'保存重點是穩定環境與完整紀錄，不是把外殼擦到像新的一樣。',credit:'Lighter DataBase 圖解',page:''}],
-  collecting:[{src:monoGuideFigure('收藏入門',['先決定主題：品牌 / 機構 / 年代','品牌等級不等於每一顆都高價','原裝度通常比亮度更重要','成交價比刊登價更有參考性']),caption:'先有收藏主題，再看型號、年代與原裝度，能大幅降低亂買風險。',credit:'Lighter DataBase 圖解',page:''}],
-  authentication:[{src:monoGuideFigure('年份與真偽辨識',['先確認品牌與系列','再看底印、刻字與材質標記','再比機構細節是否合理','最後檢查年代一致性']),caption:'不要只看 Logo；真正可靠的是多個特徵能互相對上。',credit:'Lighter DataBase 圖解',page:''}],
-  buying:[{src:monoGuideFigure('買中古打火機前檢查',['至少要正反面、頂部、底部照','補拍鉸鏈、火輪、加油 / 加氣口','Automatic 最好要操作影片','修復痕跡、漏氣、缺件要問清楚']),caption:'照片越完整，越能避免買錯型號或忽略重要缺件。',credit:'Lighter DataBase 圖解',page:''}],
-  safety:[{src:monoGuideFigure('安全原則',['補油 / 加氣時遠離火源','疑似漏氣就停止使用','不熟悉的高價古董不要強拆','有燃料的打火機避免高熱環境']),caption:'老打火機既是收藏品，也是燃料容器與點火裝置，安全永遠優先。',credit:'Lighter DataBase 圖解',page:''}],
-  checklist:[{src:monoGuideFigure('30 秒收藏檢查表',['記下名稱、Logo、專利號','先分結構：煤油 / 丁烷 / 自動','拍清底印、序號、材質標記','檢查掉鍍、裂痕、焊補與缺件','把價格、來源與照片一併存檔']),caption:'看見陌生老機時，先按這個順序記錄，後續查證會快很多。',credit:'Lighter DataBase 圖解',page:''}]
+  history:[
+    {src:commonsFile('Döbereiner fire gadget.png'),caption:'1823 年 Döbereiner 氫氣打火裝置的結構圖。這種設計和後來的口袋煤油機不同，但很適合理解「打火機」早期發展。',credit:'Wikimedia Commons · Public Domain',page:commonsPage('Döbereiner fire gadget.png')}
+  ],
+  mechanisms:[
+    {src:commonsFile('Disassembled butane lighter (5).jpg'),caption:'丁烷打火機拆解圖：可以直接看到氣槽、噴嘴、點火模組與外殼不是煤油棉芯結構。',credit:'Suyash Dwivedi · CC BY-SA 4.0',page:commonsPage('Disassembled butane lighter (5).jpg')},
+    {src:commonsFile('Piezo igniter.jpg'),caption:'壓電點火器本體。按下時產生高壓火花，因此不需要傳統火石輪。',credit:'Wikimedia Commons',page:commonsPage('Piezo igniter.jpg')},
+    {src:commonsFile('Flint spark lighter striking.jpg'),caption:'火石輪點火時的火花。若打火機上看得到火輪與火石管，多半屬於這一類機構。',credit:'Phyzome · CC BY-SA 3.0',page:commonsPage('Flint spark lighter striking.jpg')}
+  ],
+  maintenance:[
+    {src:commonsFile('Zippo Vintage serisi çakmak.jpg'),caption:'外殼與內膽分離的實例。煤油機保養時，要先理解哪些是外殼、內膽、棉芯與火石相關部位。',credit:'Wikimedia Commons',page:commonsPage('Zippo Vintage serisi çakmak.jpg')}
+  ],
+  storage:[
+    {src:commonsFile('Vintage Smoking Set In Presentation Box - Ashtray, Cigarette Holder & Cigarette Lighter, No Manufacturer Markings (18187337763).jpg'),caption:'原盒／成套配件也是收藏完整度的一部分。保存時最好讓金屬件彼此不直接磨擦。',credit:'Joe Haupt · CC BY-SA 2.0',page:commonsPage('Vintage Smoking Set In Presentation Box - Ashtray, Cigarette Holder & Cigarette Lighter, No Manufacturer Markings (18187337763).jpg')}
+  ],
+  collecting:[
+    {src:commonsFile('Cigarette Lighter Collection 2 (8490962168).jpg'),caption:'不同品牌、年代與外型混合收藏的實例。收藏主題不一定只能綁在單一品牌。',credit:'Joe Haupt · CC BY-SA 2.0',page:commonsPage('Cigarette Lighter Collection 2 (8490962168).jpg')}
+  ],
+  authentication:[
+    {src:commonsFile('Zippo bottom.jpg'),caption:'底印是年代與真偽判斷的重要證據之一。要看字體、排版、日期碼、產地與其他細節是否同時吻合。',credit:'Hu Totya · CC BY 3.0 / GFDL',page:commonsPage('Zippo bottom.jpg')}
+  ],
+  buying:[
+    {src:commonsFile('Zippo open.jpg'),caption:'買中古打火機時，不只拍正面；頂部、鉸鏈、火輪與火口常比外殼圖案更能辨識型號與機構。',credit:'Hu Totya · CC BY 3.0 / GFDL',page:commonsPage('Zippo open.jpg')}
+  ],
+  safety:[
+    {src:commonsFile('White lighter with flame.JPG'),caption:'補油、加氣、測漏與拆修時都應遠離已點燃的火焰與高熱源。',credit:'Kimmo Palosaari · Public Domain',page:commonsPage('White lighter with flame.JPG')}
+  ],
+  checklist:[
+    {src:commonsFile('Vintage Cigarette Case and Lighter, Souvenir of Gibraltar, No Manufacturer Markings (10500953605).jpg'),caption:'無品牌／陌生款更需要逐項記錄外型、底印、機構、材質與配件，不能只靠外觀猜品牌。',credit:'Joe Haupt · CC BY-SA 2.0',page:commonsPage('Vintage Cigarette Case and Lighter, Souvenir of Gibraltar, No Manufacturer Markings (10500953605).jpg')}
+  ]
 };
 function knowledgePhotosHTML(id,title){
   const ps=KNOWLEDGE_PHOTOS[id]||[];if(!ps.length)return '';
-  return `<div class="knowledge-photo-grid">${ps.map((p,i)=>{const img=`<img loading="lazy" src="${esc(safeUrl(p.src))}" alt="${esc(title)} 參考圖 ${i+1}">`;const body=p.page?`<a href="${esc(safeUrl(p.page))}" target="_blank" rel="noopener">${img}</a>`:img;return `<figure class="knowledge-photo">${body}<figcaption><span>${esc(p.caption)}</span><small>圖解：${esc(p.credit)}</small></figcaption></figure>`}).join('')}</div>`
+  return `<div class="knowledge-photo-grid">${ps.map((p,i)=>`<figure class="knowledge-photo"><a href="${esc(safeUrl(p.page))}" target="_blank" rel="noopener"><img loading="lazy" src="${esc(safeUrl(p.src))}" alt="${esc(title)} 參考照片 ${i+1}"></a><figcaption><span>${esc(p.caption)}</span><small>圖片：${esc(p.credit)}</small></figcaption></figure>`).join('')}</div>`
 }
 function knowledgeArticleHTML(k){return `<details class="knowledge-card" data-knowledge="${esc(k.id)}"><summary><span class="knowledge-icon">${esc(k.icon)}</span><div><h3>${esc(k.title)}</h3><p>${esc(k.summary)}</p></div><span class="knowledge-arrow">⌄</span></summary><div class="knowledge-body">${knowledgePhotosHTML(k.id,k.title)}${(k.sections||[]).map(s=>`<section><h4>${esc(s.title)}</h4><p>${esc(s.body)}</p></section>`).join('')}${k.sources?.length?`<div class="knowledge-sources"><b>延伸資料</b>${k.sources.map(a=>`<a href="${esc(safeUrl(a.url))}" target="_blank" rel="noopener">${esc(a.name)} ↗</a>`).join('')}</div>`:''}</div></details>`}
 function knowledgeLinksHTML(){const a=links();return `<details class="knowledge-card resource-card"><summary><span class="knowledge-icon">↗</span><div><h3>資料庫與收藏社群</h3><p>把原本的參考資料整合進知識區，避免導航列太碎。</p></div><span class="knowledge-arrow">⌄</span></summary><div class="knowledge-body"><div id="knowledgeLinks">${a.map((l,i)=>`<div class="linkrow"><div><b>${esc(l.name)}</b>${l.note?`<div class="note">${esc(l.note)}</div>`:''}<a class="source" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener">開啟網站 ↗</a></div><button class="danger" data-klinkdel="${i}">刪除</button></div>`).join('')}</div><form id="knowledgeLinkForm" class="form compact-form"><div class="field"><label>網站名稱</label><input name="name" required></div><div class="field"><label>網址</label><input name="url" type="url" required></div><div class="field full"><label>用途 / 備註</label><input name="note"></div><button class="full">＋ 新增參考網址</button></form></div></details>`}
 function bindKnowledgeLinks(){const f=document.querySelector('#knowledgeLinkForm');if(f)f.onsubmit=e=>{e.preventDefault();const fd=new FormData(f),a=links();a.push({name:fd.get('name').trim(),url:fd.get('url').trim(),note:fd.get('note').trim()});setJSON('lighterLinks',a);renderKnowledge()};document.querySelectorAll('[data-klinkdel]').forEach(b=>b.onclick=()=>{if(confirm('刪除這個網址？')){const a=links();a.splice(+b.dataset.klinkdel,1);setJSON('lighterLinks',a);renderKnowledge()}})}
-function renderKnowledge(){filters.style.display='none';q.parentElement.style.display='none';status.textContent='';results.innerHTML=`<section class="knowledge-page"><div class="knowledge-hero"><small>LIGHTER KNOWLEDGE</small><h2>🕮 打火機知識庫</h2><p>歷史、機構、保養、保存、收藏與辨識的基礎手冊。內容以收藏安全與「保留原裝」為優先。</p></div><div class="knowledge-search"><input id="knowledgeSearch" placeholder="搜尋：火石、丁烷、保養、真偽、歷史…"><button id="knowledgeClear">×</button></div><div class="knowledge-warning">⚠ 古董打火機的材質、密封與機構差異很大；知識庫提供一般原則，稀有或高價品拆修前仍應查該型號資料。</div><div id="knowledgeList">${KNOWLEDGE.map(knowledgeArticleHTML).join('')}${knowledgeLinksHTML()}</div></section>`;bindKnowledgeLinks();const input=document.querySelector('#knowledgeSearch'),list=document.querySelector('#knowledgeList');const apply=()=>{const t=norm(input.value.trim());const data=!t?KNOWLEDGE:KNOWLEDGE.filter(k=>norm([k.title,k.summary,...(k.sections||[]).flatMap(s=>[s.title,s.body])].join(' ')).includes(t));list.innerHTML=(data.length?data.map(knowledgeArticleHTML).join(''):'<div class="empty small">找不到符合的知識文章。</div>')+(!t?knowledgeLinksHTML():'');bindKnowledgeLinks()};input.oninput=apply;document.querySelector('#knowledgeClear').onclick=()=>{input.value='';input.focus();apply()}}
+function renderKnowledge(){filters.style.display='none';q.parentElement.style.display='none';status.textContent='';results.innerHTML=`<section class="knowledge-page"><div class="knowledge-hero"><small>LIGHTER KNOWLEDGE</small><h2><span class="mono-title-icon">▤</span>打火機知識庫</h2><p>歷史、機構、保養、保存、收藏與辨識的基礎手冊。內容以收藏安全與「保留原裝」為優先。</p></div><div class="knowledge-search"><input id="knowledgeSearch" placeholder="搜尋：火石、丁烷、保養、真偽、歷史…"><button id="knowledgeClear">×</button></div><div class="knowledge-warning">⚠ 古董打火機的材質、密封與機構差異很大；知識庫提供一般原則，稀有或高價品拆修前仍應查該型號資料。</div><div id="knowledgeList">${KNOWLEDGE.map(knowledgeArticleHTML).join('')}${knowledgeLinksHTML()}</div></section>`;bindKnowledgeLinks();const input=document.querySelector('#knowledgeSearch'),list=document.querySelector('#knowledgeList');const apply=()=>{const t=norm(input.value.trim());const data=!t?KNOWLEDGE:KNOWLEDGE.filter(k=>norm([k.title,k.summary,...(k.sections||[]).flatMap(s=>[s.title,s.body])].join(' ')).includes(t));list.innerHTML=(data.length?data.map(knowledgeArticleHTML).join(''):'<div class="empty small">找不到符合的知識文章。</div>')+(!t?knowledgeLinksHTML():'');bindKnowledgeLinks()};input.oninput=apply;document.querySelector('#knowledgeClear').onclick=()=>{input.value='';input.focus();apply()}}
 
 function renderLinks(){let a=links();results.innerHTML=`<div class="about"><h2>參考資料</h2><p>把常用的收藏資料庫、論壇、文章或賣場放在這裡。</p><form id="linkForm" class="form"><div class="field"><label>網站名稱</label><input name="name" required placeholder="例如 Lighter Library"></div><div class="field"><label>網址</label><input name="url" type="url" required placeholder="https://…"></div><div class="field full"><label>用途 / 備註</label><input name="note" placeholder="例如：查製造商、專利、型錄"></div><button class="full">＋ 新增網址</button></form><div>${a.map((l,i)=>`<div class="linkrow"><div><b>${esc(l.name)}</b>${l.note?`<div class="note">${esc(l.note)}</div>`:''}<a class="source" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener">開啟網站 ↗</a></div><button class="danger" data-linkdel="${i}">刪除</button></div>`).join('')}</div></div>`;document.querySelector('#linkForm').onsubmit=e=>{e.preventDefault();let fd=new FormData(e.target),a=links();a.push({name:fd.get('name').trim(),url:fd.get('url').trim(),note:fd.get('note').trim()});setJSON('lighterLinks',a);render()};results.querySelectorAll('[data-linkdel]').forEach(b=>b.onclick=()=>{if(confirm('刪除這個網址？')){let a=links();a.splice(+b.dataset.linkdel,1);setJSON('lighterLinks',a);render()}})}
 async function exportBackup(){const db=models(),photos={};for(const arr of Object.values(db)){for(const m0 of arr){const m=normalizeModel(m0);try{const ps=await getPhotos(m.id);if(ps.length)photos[m.id]=await Promise.all(ps.map(blobToDataURL))}catch{}}}for(const h of aiHistory()){try{const ps=await getPhotos('aihist-'+h.id);if(ps.length)photos['aihist-'+h.id]=await Promise.all(ps.map(blobToDataURL))}catch{}}const data={version:11,exported:new Date().toISOString(),saved:saved(),models:db,links:links(),brandNotes:brandNotes(),brandAliases:userAliases(),aiEndpoint:aiEndpoint(),aiCostLog:getJSON('lighterAICostLog',[]),aiHistory:aiHistory(),photos},blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`lighter-db-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}

@@ -1,6 +1,6 @@
 window.LIGHTER_KNOWLEDGE=[
   {
-    id:'history',icon:'⌛',title:'打火機歷史速覽',summary:'從早期化學點火、火石輪到自動機構與丁烷時代。',
+    id:'history',icon:'◷',title:'打火機歷史速覽',summary:'從早期化學點火、火石輪到自動機構與丁烷時代。',
     sections:[
       {title:'1820s：早期「打火機式」裝置',body:'1823 年的 Döbereiner’s lamp 常被視為早期打火機史的重要節點：它利用化學反應產生氫氣並以鉑催化點燃。它和後來的口袋打火機不同，但代表「不用火柴直接產生火焰」的早期方向。'},
       {title:'1900s–1930s：火石輪與機械自動化',body:'20 世紀初 ferrocerium（俗稱打火石）普及後，火輪＋火石＋液態燃料棉芯成為核心架構。1910s–30s 出現大量 lift-arm、semi-automatic、automatic 機構，Thorens、Ronson、Hahway、KW、Mylflam 等收藏重點大多在這段時期。'},
@@ -15,7 +15,7 @@ window.LIGHTER_KNOWLEDGE=[
     ]
   },
   {
-    id:'mechanisms',icon:'⚙',title:'機構 / 類型辨識',summary:'不知道它算哪一種？先從燃料、點火方式、開蓋動作三件事開始看。',
+    id:'mechanisms',icon:'⚙︎',title:'機構 / 類型辨識',summary:'不知道它算哪一種？先從燃料、點火方式、開蓋動作三件事開始看。',
     sections:[
       {title:'第一步：先分燃料系統',body:'最簡單的判斷法是看它靠什麼出火。看到棉芯、油棉、加油棉塞，多半是液態燃料 / petrol / naphtha；看到加氣閥、氣槽與噴嘴，多半是丁烷 / butane。煤油機常有揮發味與棉芯；丁烷機則通常依賴氣壓與閥門。'},
       {title:'第二步：看點火方式',body:'最常見的是火石輪摩擦火石點火：會看到火輪、火石管與彈簧。若按壓會發出清脆喀一聲、靠火花點燃，可能是壓電點火。少數特殊機構則可能是電熱、催化或混合式，這類通常要查專利或原始說明。'},
@@ -26,7 +26,7 @@ window.LIGHTER_KNOWLEDGE=[
     ]
   },
   {
-    id:'maintenance',icon:'🧰',title:'日常保養',summary:'原則是「少拆、少磨、先辨識結構再動手」。',
+    id:'maintenance',icon:'✚',title:'日常保養',summary:'原則是「少拆、少磨、先辨識結構再動手」。',
     sections:[
       {title:'古董煤油機',body:'補充燃料前先確認油棉、棉芯、火石管與塞蓋狀況。少量慢慢加，不要灌到外殼滲油；擦掉外部燃料並等待揮發後再點火。若火石輪卡死，不要硬轉，常見原因是舊火石粉化或膨脹卡管。'},
       {title:'古董丁烷機',body:'若有漏氣、閥門異常或密封件老化，不建議自行大拆加壓系統。先查該型號維修資料；加氣與測漏都應遠離火源並保持通風。'},
@@ -36,7 +36,7 @@ window.LIGHTER_KNOWLEDGE=[
     ]
   },
   {
-    id:'storage',icon:'🗄',title:'長期收藏與保存',summary:'穩定環境與完整紀錄，通常比「擦得像全新」更重要。',
+    id:'storage',icon:'▣',title:'長期收藏與保存',summary:'穩定環境與完整紀錄，通常比「擦得像全新」更重要。',
     sections:[
       {title:'展示品是否留燃料？',body:'若主要用途是長期展示，通常以不留大量燃料較乾淨安全，也能降低滲漏與氣味風險。不同燃料系統與原廠規定不同；高價或特殊機型優先遵循原廠／專業維修建議。'},
       {title:'濕度與收納',body:'避免高濕、鹽霧、長期日曬與劇烈溫差。金屬件要防潮，但也不要讓未乾的清潔劑或水氣被密封在盒內。皮套、泡棉與某些老塑料也可能老化或與鍍層反應。'},
@@ -55,7 +55,7 @@ window.LIGHTER_KNOWLEDGE=[
     ]
   },
   {
-    id:'authentication',icon:'🔎',title:'年份與真偽辨識方法',summary:'不要只看 Logo；要建立「多個特徵互相吻合」的證據鏈。',
+    id:'authentication',icon:'⌕',title:'年份與真偽辨識方法',summary:'不要只看 Logo；要建立「多個特徵互相吻合」的證據鏈。',
     sections:[
       {title:'第一層：品牌與系列',body:'先確認它到底屬於哪個系列，再談年份。外殼外型相似不代表機芯相同；OEM、授權生產與後期復刻也可能使用相近 Logo。'},
       {title:'第二層：底印與刻字',body:'拍清楚 Logo 字體、Made in、專利號、序號、材質 hallmark、型號碼與所有底印。刻字的位置、深淺與排版都比「有沒有 Logo」更有用。'},
@@ -65,7 +65,7 @@ window.LIGHTER_KNOWLEDGE=[
     ]
   },
   {
-    id:'buying',icon:'🛒',title:'買中古打火機前檢查',summary:'照片越完整，買錯與買到缺件的機率越低。',
+    id:'buying',icon:'✓',title:'買中古打火機前檢查',summary:'照片越完整，買錯與買到缺件的機率越低。',
     sections:[
       {title:'至少要求的照片',body:'正面、背面、底部、頂部、鉸鏈、點火機構、加油／加氣口、所有刻字。若是 automatic，最好再要一段完整操作影片。'},
       {title:'功能問題要問清楚',body:'問「能不能點火」還不夠。應分別確認火輪、火石管、彈簧、開蓋、滅火、閥門、漏氣、油箱、螺絲與缺件狀況。'},
@@ -74,7 +74,7 @@ window.LIGHTER_KNOWLEDGE=[
     ]
   },
   {
-    id:'safety',icon:'⚠',title:'安全原則',summary:'老打火機是收藏品，也是燃料容器與點火裝置。',
+    id:'safety',icon:'△',title:'安全原則',summary:'老打火機是收藏品，也是燃料容器與點火裝置。',
     sections:[
       {title:'遠離火源補充燃料',body:'任何補油、加氣、測漏或拆裝都應在通風處、遠離明火與高溫進行。外殼若沾到燃料，先擦拭並等待完全揮發。'},
       {title:'疑似漏氣就停用',body:'丁烷機若有持續嘶聲、異味、閥門異常或明顯漏氣，停止點火與加氣。不要靠明火找漏點。'},
@@ -83,7 +83,7 @@ window.LIGHTER_KNOWLEDGE=[
     ]
   },
   {
-    id:'checklist',icon:'☑',title:'30 秒收藏檢查表',summary:'看到一顆陌生老機時，先照這個順序記錄。',
+    id:'checklist',icon:'☑︎',title:'30 秒收藏檢查表',summary:'看到一顆陌生老機時，先照這個順序記錄。',
     sections:[
       {title:'① 名稱',body:'品牌 / Logo / 零售商名 / 設計者 / 專利號，全部照原樣抄下來。'},
       {title:'② 結構',body:'煤油還是丁烷？火石輪、壓電、lift-arm、automatic、claw 還是其他特殊機構？'},

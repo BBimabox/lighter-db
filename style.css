@@ -159,3 +159,29 @@ body{padding-bottom:78px}.app-header{display:flex;align-items:center;gap:12px}.h
   .brand-logo.detail{width:164px!important;height:104px!important}
   .brandcard-copy .name{font-size:18px!important}
 }
+
+
+/* v12.2 — curated real logos + monochrome icon system + refreshed knowledge photos */
+
+.mono-nav-icon,.knowledge-icon,.mono-title-icon{font-family:Arial,"Segoe UI Symbol",sans-serif!important;font-variant-emoji:text!important;color:#f2f2f2!important;filter:none!important;text-shadow:none!important}
+.mono-nav-icon{font-size:20px!important;display:inline-grid;place-items:center;width:26px;height:26px}
+.knowledge-icon{font-size:21px!important;background:#252525!important;color:#f1f1f1!important;border:1px solid #3c3c3c!important}
+.mono-title-icon{font-size:23px;margin-right:8px}
+.brand-logo.card{width:150px!important;height:96px!important}
+.brand-logo.detail{width:188px!important;height:118px!important}
+.brand-logo.real-logo img{padding:8px!important;object-fit:contain!important;background:#fff!important;transform:none!important}
+.brand-logo img.logo-fallback{padding:0!important;object-fit:contain!important;background:#fff!important}
+.brandcard-left:has(.brand-logo-empty),.brand-detail-head:has(.brand-logo-empty){gap:0!important}
+.brand-logo-empty{display:none!important}
+.knowledge-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.knowledge-photo{background:#111!important;border:1px solid #343434!important}
+.knowledge-photo>a{background:#0d0d0d!important}
+.knowledge-photo img{width:100%!important;height:280px!important;object-fit:contain!important;background:#0d0d0d!important;padding:0!important}
+.knowledge-photo figcaption span{color:#e5e5e5!important}
+.knowledge-photo figcaption small{color:#8f8f8f!important}
+@media(max-width:620px){
+  .brand-logo.card{width:136px!important;height:88px!important}
+  .brand-logo.detail{width:164px!important;height:104px!important}
+  .knowledge-photo-grid{grid-template-columns:1fr!important}
+  .knowledge-photo img{height:auto!important;max-height:380px!important}
+}

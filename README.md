@@ -1,4 +1,13 @@
-Lighter DataBase v12.1
+Lighter DataBase v12.2
+
+- 第一批 30 個常見品牌改用真實／常見 logo 圖形。
+- Prototype / 設計者 / Patent 類條目完全不顯示 logo 框。
+- 側邊欄與知識區 icon 改成統一單色符號。
+- PWA 圖示移除舊迷因圖，改成單色打火機。
+- 知識區參考圖改成不同的 Wikimedia Commons 實物／結構照片，避免重複。
+- Zippo 維持 A+。
+
+Lighter DataBase v12.2
 
 - Logo 不再放大 Google favicon；優先使用高解析 / SVG。
 - Commons 圖片改抓 640px，並用新版 cache，避免舊糊圖繼續被沿用。

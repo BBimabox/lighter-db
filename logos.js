@@ -463,4 +463,53 @@
     "Eterna": "https://my-lighter.com/3737-large_default/eterna-watch.jpg",
     "Nimrod": "https://i.ebayimg.com/00/s/MTA2NlgxNjAw/z/tmYAAOSwd7ZnnfMS/%24_57.JPG?set_id=880000500F"
   });
+
+
+  // v12.9 — preserve existing curated assets, replace broken hotlink-only logos,
+  // and add reliable common marks / representative-model fallbacks.
+  const markCanvas=(inner)=>data(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 260'><rect width='520' height='260' rx='30' fill='#fff'/>${inner}</svg>`);
+  const imCoronaMark=()=>markCanvas(`
+    <g fill='#111'>
+      <rect x='108' y='67' width='34' height='27' rx='2'/>
+      <path d='M151 94V67h34v27z M194 94V53l34-20v61z'/>
+    </g>
+    <text x='260' y='164' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-size='80' font-weight='800' fill='#111'>corona</text>`);
+  const windmillMark=()=>markCanvas(`<text x='260' y='157' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-size='86' font-style='italic' font-weight='900' fill='#111'>Windmill</text>`);
+  const princeMark=()=>markCanvas(`<text x='260' y='158' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='92' font-weight='700' letter-spacing='3' fill='#111'>PRINCE</text>`);
+  const marumanMark=()=>markCanvas(`<text x='260' y='158' text-anchor='middle' font-family='Arial,Helvetica,sans-serif' font-size='84' font-weight='800' fill='#111'>Maruman</text>`);
+
+  Object.assign(window.LIGHTER_REAL_LOGOS, {
+    // Verified/common logo asset. If the host blocks it, the app falls back to the representative image below.
+    "Colibri": "https://images.seeklogo.com/logo-png/55/1/colibri-lighter-logo-png_seeklogo-551006.png",
+    // Self-contained redraws based on the long-used marks visible on original products/packaging.
+    "IM Corona": imCoronaMark(),
+    "Windmill": windmillMark(),
+    "Prince": princeMark(),
+    "Maruman": marumanMark()
+  });
+
+  Object.assign(window.LIGHTER_REP_IMAGES, {
+    "Colibri": "https://cdn11.bigcommerce.com/s-6ihhxuk/images/stencil/1280x1280/products/25103/90040/oiheazegr__83276.1763045850.jpg?c=2",
+    "IM Corona": "https://shopping.c.yimg.jp/lib/akiha-web/aicn020_ic1.jpg",
+    "Prince": "https://www.cigaraccessorieswarehouse.com/cdn/shop/files/Screenshot_2025-03-03_at_11.51.40.png?crop=center&height=1540&v=1740963106&width=1540",
+    "Cricket": "https://cdn.grofers.com/app/images/products/sliding_image/537718a.jpg"
+  });
+
+  Object.assign(window.LIGHTER_LOGO_FIT, {
+    "Dunhill":1.28,
+    "S.T. Dupont":1.20,
+    "Thorens":1.10,
+    "Ronson":1.46,
+    "Evans":1.58,
+    "IMCO":1.18,
+    "Cartier":1.18,
+    "Scripto":1.20,
+    "Colibri":1.16,
+    "Zippo":1.20,
+    "Windmill":1.18,
+    "IM Corona":1.22,
+    "Prince":1.18,
+    "Maruman":1.18,
+    "Cricket":1.08
+  });
 })();

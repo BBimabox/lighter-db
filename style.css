@@ -273,3 +273,18 @@ body{padding-bottom:78px}.app-header{display:flex;align-items:center;gap:12px}.h
 .brand-logo.detail.rep-photo img{padding:7px!important}
 .rep-badge{position:absolute;right:5px;bottom:5px;padding:3px 6px;border-radius:999px;background:rgba(17,17,17,.82);color:#fff;font-size:9px;font-weight:800;letter-spacing:.04em;line-height:1.15;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 .brandcard-left:not(:has(.brand-logo)),.brand-detail-head:not(:has(.brand-logo)){gap:0!important}
+
+
+/* v12.9 — restore large logo presence without cropping; broken remote logos fall back to representative models */
+.brand-logo.card.real-logo:not(.rep-photo) img{
+  width:100%!important;height:100%!important;object-fit:contain!important;object-position:center!important;
+  padding:0!important;transform:scale(var(--logo-scale,1.16))!important;transform-origin:center!important;background:#fff!important;
+}
+.brand-logo.detail.real-logo:not(.rep-photo) img{
+  width:100%!important;height:100%!important;object-fit:contain!important;object-position:center!important;
+  padding:4px!important;transform:scale(var(--logo-detail-scale,1.06))!important;transform-origin:center!important;background:#fff!important;
+}
+.brand-logo.setting.real-logo:not(.rep-photo) img{
+  padding:4px!important;transform:scale(var(--logo-setting-scale,1.04))!important;object-fit:contain!important;
+}
+.brand-logo.rep-photo img{transform:none!important;object-fit:contain!important;padding:4px!important}

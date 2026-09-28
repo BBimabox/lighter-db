@@ -33,6 +33,7 @@ function makerMarkData(name){
 }
 const LOGO_OVERRIDES=window.LIGHTER_REAL_LOGOS||window.LIGHTER_LOGO_OVERRIDES||{};
 const LOGO_DOMAINS=window.LIGHTER_LOGO_DOMAINS||{};
+const LOGO_FIT=window.LIGHTER_LOGO_FIT||{};
 function brandLogoOverrides(){return readStore('lighterBrandLogoOverrides',{})}
 function brandRankOverrides(){return readStore('lighterBrandRanks',{})}
 function brandOriginOverrides(){return readStore('lighterBrandOrigins',{})}
@@ -42,11 +43,11 @@ function defaultLogo(name){const k=logoKeyName(name),direct=LOGO_OVERRIDES[k]||L
 function effectiveLogo(name){return brandLogoOverrides()[canonicalBrandName(name)]||defaultLogo(name)||''}
 function brandLogoHTML(name,variant='card'){
   if(shouldOmitLogo(name))return '';
-  const fallback=makerMarkData(name),real=effectiveLogo(name);
-  return `<div class="brand-logo ${variant}${real?' real-logo':''}"><img data-logo-fallback="${esc(fallback)}" src="${esc(real||fallback)}" alt="${esc(displayBrandName(name))} logo"></div>`
+  const fallback=makerMarkData(name),real=effectiveLogo(name),custom=!!brandLogoOverrides()[canonicalBrandName(name)],scale=custom?1:(LOGO_FIT[logoKeyName(name)]||1.16);
+  return `<div class="brand-logo ${variant}${real?' real-logo':''}" style="--logo-scale:${scale}"><img data-logo-fallback="${esc(fallback)}" src="${esc(real||fallback)}" alt="${esc(displayBrandName(name))} logo"></div>`
 }
-function logoLookupCache(){return getJSON('lighterLogoLookupV124',{})}
-function setLogoLookup(name,url){const c=logoLookupCache();c[name]=url||'__none__';setJSON('lighterLogoLookupV124',c)}
+function logoLookupCache(){return getJSON('lighterLogoLookupV125',{})}
+function setLogoLookup(name,url){const c=logoLookupCache();c[name]=url||'__none__';setJSON('lighterLogoLookupV125',c)}
 async function commonsLogoLookup(name){
   const label=displayBrandName(name),tokens=label.toLowerCase().split(/[^a-z0-9]+/).filter(t=>t.length>2);
   if(!tokens.length)return '';

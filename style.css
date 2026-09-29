@@ -307,3 +307,50 @@ body{padding-bottom:78px}.app-header{display:flex;align-items:center;gap:12px}.h
 .scroll-top-btn:active{transform:scale(.91);background:#343434}
 .scroll-top-btn:focus-visible{outline:3px solid #e2c15d;outline-offset:3px}
 @media(min-width:900px){.scroll-top-btn{right:28px;bottom:88px}}
+
+
+/* v15 — mobile interaction polish + brand delete action */
+*{-webkit-tap-highlight-color:transparent}
+button,a,summary,label,.brandcard,.chip,.owned-pill,.favorite-toggle,.scroll-top-btn{-webkit-touch-callout:none}
+.brand-delete-icon{
+  width:46px;height:46px;min-width:46px;min-height:46px;padding:0!important;
+  display:grid;place-items:center;flex:0 0 auto!important;border-radius:12px!important;
+  border:1px solid #5a3333!important;background:#241919!important;color:#ffb8b8!important;
+  cursor:pointer;touch-action:manipulation;box-shadow:none!important
+}
+.brand-delete-icon svg{width:21px;height:21px;display:block;fill:currentColor;pointer-events:none}
+.brand-delete-icon:active{transform:scale(.94);background:#321d1d!important}
+.brand-settings-actions{align-items:center}
+.brand-settings-actions #saveBrandSettings{flex:1}
+.brand-settings-actions .brand-delete-icon{flex:0 0 46px;min-width:46px!important}
+
+@media (hover:none) and (pointer:coarse){
+  button,a,summary,label,.brandcard,.chip,select,input,textarea{-webkit-tap-highlight-color:transparent!important}
+  button:focus,a:focus,summary:focus,.brandcard:focus{outline:none!important}
+  button:focus-visible,a:focus-visible,summary:focus-visible{outline:1px solid #666!important;outline-offset:2px}
+  .modal{overscroll-behavior:contain}
+  .sheet{
+    max-height:96dvh!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch;
+    scroll-behavior:smooth;
+    padding-top:74px!important;
+  }
+  #closeModal.close{
+    position:fixed!important;
+    top:max(10px,env(safe-area-inset-top))!important;
+    right:max(10px,env(safe-area-inset-right))!important;
+    width:56px!important;height:56px!important;min-width:56px!important;min-height:56px!important;
+    z-index:120!important;
+    background:#242424!important;border:1px solid #464646!important;
+    box-shadow:0 8px 24px rgba(0,0,0,.45)!important;
+  }
+  #closeModal.close::before{inset:-12px!important}
+  .modal:not(.hidden){backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+  .sheet::before{
+    content:'';position:absolute;top:9px;left:50%;transform:translateX(-50%);
+    width:42px;height:4px;border-radius:999px;background:#4a4a4a;pointer-events:none
+  }
+  .brand-section>summary,.sidebar-section>button,.bottom-nav button,.database-toolbar button{min-height:48px}
+}
